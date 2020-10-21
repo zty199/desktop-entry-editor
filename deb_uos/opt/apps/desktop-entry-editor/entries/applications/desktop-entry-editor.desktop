@@ -1,0 +1,12 @@
+[Desktop Entry]
+Categories=System;
+Comment=A simple GUI tool to create and edit desktop files for Deepin, desinged using DTK.
+Encoding=UTF-8
+Exec=desktop-entry-editor %f
+Icon=application-x-desktop
+MimeType=application/x-desktop
+Name=DesktopEntryEditor
+Name[zh_CN]=桌面快捷方式编辑器
+StartupWMClass=DesktopEntryEditor
+Terminal=False
+Type=Application

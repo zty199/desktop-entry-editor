@@ -1,0 +1,9 @@
+#!/bin/sh
+
+ln -s -f /opt/apps/desktop-entry-editor/files/bin/desktop-entry-editor.sh /usr/bin/desktop-entry-editor
+
+ln -s -f ../../opt/apps/desktop-entry-editor/files/share/desktop-entry-editor /usr/share/
+
+# update-icon-caches /usr/share/icons/hicolor || true
+update-desktop-database /usr/share/applications || true
+update-mime-database /usr/share/mime || true
