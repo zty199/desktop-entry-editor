@@ -1,12 +1,13 @@
 [Desktop Entry]
-Categories=System;
-Comment=A simple GUI tool to create and edit desktop files for Deepin, desinged using DTK.
 Encoding=UTF-8
-Exec=desktop-entry-editor %f
-Icon=application-x-desktop
-MimeType=application/x-desktop
-Name=DesktopEntryEditor
-Name[zh_CN]=桌面快捷方式编辑器
-StartupWMClass=DesktopEntryEditor
-Terminal=False
 Type=Application
+Categories=System;
+Exec=desktop-entry-editor %f
+Icon=/usr/share/icons/hicolor/scalable/apps/desktop-entry-editor.svg
+Name=Desktop Entry Editor
+Name[zh_CN]=桌面快捷方式编辑器
+Comment=A simple GUI tool to create and edit desktop files for Deepin, desinged using DTK.
+Comment[zh_CN]=一款简单的为 Deepin 打造的桌面快捷方式图形编辑工具，使用 DTK 设计。
+Terminal=False
+StartupWMClass=Desktop Entry Editor
+MimeType=application/x-desktop

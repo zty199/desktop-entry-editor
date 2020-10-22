@@ -5,7 +5,7 @@
 #include <QDropEvent>
 #include <QDesktopServices>
 
-#include <DWidgetUtil>  //  加入此头文件方可使用 moveToCenter
+#include <DWidgetUtil>  //  Dtk::Widget::moveToCenter(&w); 要调用它，就得引用 DWidgetUtil
 #include <DTitlebar>
 #include <DFileDialog>
 #include <DMessageBox>
@@ -67,12 +67,14 @@ void MainWindow::setDesktopFile(QString file)
 
 void MainWindow::initUI()
 {
-    setCentralWidget(w);                                            //  将 w 作为窗口的用户部分（整个窗口除了标题栏的部分）
-    setFixedSize(600, 450);                                         //  固定 MainWindow 窗口大小
-    moveToCenter(this);                                             //  把窗口移动到屏幕中间
+    setCentralWidget(w);                                //  将 w 作为窗口的用户部分（整个窗口除了标题栏的部分）
+    setFixedSize(600, 450);                             //  固定 MainWindow 窗口大小
+    moveToCenter(this);                                 //  把窗口移动到屏幕中间
 
-    setWindowIcon(QIcon::fromTheme("application-x-desktop"));       //  设置窗口图标
-    titlebar()->setIcon(QIcon::fromTheme("application-x-desktop")); //  设置标题栏上的图标
+    setWindowIcon(QIcon(ICONPATH));                     //  设置窗口图标
+    setAttribute(Qt::WA_TranslucentBackground, true);   //  设置窗口透明
+    titlebar()->setBlurBackground(true);                //  设置标题栏模糊
+    titlebar()->setIcon(QIcon(ICONPATH));               //  设置标题栏图标
 
     //  在标题栏上添加一个菜单 / 菜单项
     m_menu->addAction(m_newFile);
@@ -141,11 +143,12 @@ void MainWindow::initUI()
 void MainWindow::initDefaultValues()
 {
     setAcceptDrops(true);                               //  允许窗口接受拖放文件
-    titlebar()->setTitle(tr("Desktop Entry Editor"));   //  设置窗口标题
+    titlebar()->setTitle(tr("Desktop Entry Editor"));   //  设置标题栏标题
 
     m_iconFile = nullptr;
     m_desktopFile = nullptr;
     fileName = nullptr;
+    isSaveAs = false;
 
     m_icon->installEventFilter(this);                   //  响应点击图标事件
     m_icon->setPixmap(QIcon::fromTheme("application-x-executable").pixmap(128, 128));
@@ -197,18 +200,20 @@ void MainWindow::loadDesktopFile()
     if(!m_desktopFile.isEmpty())
     {
         QFile file(m_desktopFile);
-        if(file.exists())
+        //  判断文件是否存在，以及文件是否可读取
+        if(file.exists() && file.permissions().testFlag(QFile::ReadOwner))
         {
             fileName = QFileInfo(file).fileName();              //  获取文件名
             titlebar()->setTitle(fileName);                     //  显示当前文件名
             m_parser->load(QFileInfo(file).absoluteFilePath()); //  载入文件（会自动清空原有键值）
             m_desktopFile = QFileInfo(file).absoluteFilePath(); //  更新文件绝对路径
-            file.close();
         }
         else
         {
             return;
         }
+
+        isSaveAs = false;
 
         //  读取文件信息
         m_nameEdit->setText(m_parser->value(KeyName).toString());
@@ -287,21 +292,28 @@ void MainWindow::openDesktopFile()
     if(QFileInfo(openFile).suffix() == "desktop")
     {
         m_desktopFile = openFile;
+        loadDesktopFile();
     }
-    loadDesktopFile();
 }
 
 void MainWindow::saveAsDesktopFile()
 {
     QString saveFile = QFileDialog::getSaveFileName(this, tr("Save As"), QDir::homePath() + WORKSPACE, tr("Desktop Entry Files (*.desktop)"));
-    if(!saveFile.isEmpty())
+    //  判断文件名是否为空，以及上层目录是否可写入
+    if(!saveFile.isEmpty() && QFileInfo(QFileInfo(saveFile).absolutePath()).permissions().testFlag(QFile::WriteUser))
     {
         m_desktopFile = saveFile;
         if(!saveFile.endsWith(".desktop"))
         {
             m_desktopFile += ".desktop";
+            isSaveAs = true;    //  另存为文件时文件不存在，所以无法写入，需要判断
         }
         createOrUpdateDesktopFile();
+    }
+    else
+    {
+        saveAsDesktopFile();
+        return;
     }
 }
 
@@ -317,6 +329,13 @@ void MainWindow::chooseIcon()
 
 void MainWindow::createOrUpdateDesktopFile()
 {
+    //  判断文件路径是否为空，原文件是否可写入，是否为另存为操作
+    if(m_desktopFile.isEmpty() || (!QFile::permissions(m_desktopFile).testFlag(QFile::WriteOwner) && !isSaveAs))
+    {
+        saveAsDesktopFile();
+        return;
+    }
+
     m_parser->setValue(KeyEncoding, "UTF-8");
     m_parser->setValue(KeyType, "Application");
     m_parser->setValue(KeyName, m_nameEdit->text());
@@ -370,15 +389,10 @@ void MainWindow::createOrUpdateDesktopFile()
 
     m_parser->setValue(KeyMimeType, m_mimetypeEdit->text());
 
-    if(fileName.isEmpty() && m_desktopFile.isEmpty())
-    {
-        saveAsDesktopFile();
-        return;
-    }
     m_parser->save(m_desktopFile);
 
     fileName = QFileInfo(m_desktopFile).fileName();
-    titlebar()->setTitle(fileName); //  显示当前文件名
+    titlebar()->setTitle(fileName); //  标题栏显示当前文件名
 
     DMessageBox::StandardButton result = DMessageBox::information(nullptr, tr("Tip"), tr("Desktop Entry saved!"), DMessageBox::Ok | DMessageBox::Open);
     switch (result)

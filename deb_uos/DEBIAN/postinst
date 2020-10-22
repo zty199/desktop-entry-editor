@@ -4,6 +4,6 @@ ln -s -f /opt/apps/desktop-entry-editor/files/bin/desktop-entry-editor /usr/bin/
 
 ln -s -f ../../opt/apps/desktop-entry-editor/files/share/desktop-entry-editor /usr/share/
 
-# update-icon-caches /usr/share/icons/hicolor || true
+update-icon-caches /usr/share/icons/hicolor || true
 update-desktop-database /usr/share/applications || true
 update-mime-database /usr/share/mime || true

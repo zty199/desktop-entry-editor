@@ -4,7 +4,7 @@
 #include <QWidget>
 
 #include <DMainWindow>
-#include <DGuiApplicationHelper>
+#include <DBlurEffectWidget>
 #include <DLabel>
 #include <DLineEdit>
 #include <DFileChooserEdit>
@@ -15,6 +15,7 @@
 #include <XdgDesktopFile>
 
 #define WORKSPACE "/.local/share/applications/desktop-entry-editor/"
+#define ICONPATH "/usr/share/icons/hicolor/scalable/apps/desktop-entry-editor.svg"
 
 DWIDGET_USE_NAMESPACE
 
@@ -29,7 +30,8 @@ public:
     void setDesktopFile(QString file);
 
 private:
-    QWidget *w = new QWidget;   //  w 是窗口的用户区，应当是所有窗口中控件的父（不包含标题栏及其上边的控件）
+    //  w 是窗口的用户区，应当是所有窗口中控件的父（不包含标题栏及其上边的控件）
+    QWidget *w = new DBlurEffectWidget; //  继承 DTK 透明模糊控件
 
     QMenu *m_menu;
     QAction *m_newFile;
@@ -55,6 +57,7 @@ private:
     QString m_iconFile;
     QString m_desktopFile;
     QString fileName;
+    bool isSaveAs;
 
     void initUI();
     void initDefaultValues();
