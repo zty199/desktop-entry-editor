@@ -1,6 +1,6 @@
 #!/bin/sh
 
-ln -s -f /opt/apps/desktop-entry-editor/files/bin/desktop-entry-editor.sh /usr/bin/desktop-entry-editor
+ln -s -f /opt/apps/desktop-entry-editor/files/bin/desktop-entry-editor /usr/bin/desktop-entry-editor
 
 ln -s -f ../../opt/apps/desktop-entry-editor/files/share/desktop-entry-editor /usr/share/
 
