@@ -15,7 +15,7 @@
 #include <XdgDesktopFile>
 
 #define WORKSPACE "/.local/share/applications/desktop-entry-editor/"
-#define ICONPATH "/usr/share/icons/hicolor/scalable/apps/desktop-entry-editor.svg"
+#define ICONNAME "com.gitee.deepin-opensource.desktop-entry-editor"
 
 DWIDGET_USE_NAMESPACE
 

@@ -97,7 +97,7 @@
     <message>
         <location filename="../mainwindow.cpp" line="167"/>
         <source>Supported MIME type(s)</source>
-        <translation>支持的文件类型</translation>
+        <translation>支持使用此应用打开的文件类型</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="174"/>

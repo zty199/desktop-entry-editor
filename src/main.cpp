@@ -11,9 +11,9 @@ int main(int argc, char *argv[])
 
     a.setOrganizationName("spark-union");                       //  设置组织名称
     a.setProductName(QObject::tr("Desktop Entry Editor"));      //  设置项目名称
-    a.setProductIcon(QIcon(ICONPATH));                          //  设置程序 Logo
+    a.setProductIcon(QIcon::fromTheme(ICONNAME));               //  设置程序 Logo
     a.setApplicationName(QObject::tr("Desktop Entry Editor"));  //  设置程序名称
-    a.setApplicationVersion(DApplication::buildVersion("1.0")); //  设置程序版本
+    a.setApplicationVersion(DApplication::buildVersion("1.2")); //  设置程序版本
 
     //  设置程序介绍
     a.setApplicationDescription(

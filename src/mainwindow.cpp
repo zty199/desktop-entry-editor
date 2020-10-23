@@ -67,14 +67,14 @@ void MainWindow::setDesktopFile(QString file)
 
 void MainWindow::initUI()
 {
-    setCentralWidget(w);                                //  将 w 作为窗口的用户部分（整个窗口除了标题栏的部分）
-    setFixedSize(600, 450);                             //  固定 MainWindow 窗口大小
-    moveToCenter(this);                                 //  把窗口移动到屏幕中间
+    setCentralWidget(w);                              //  将 w 作为窗口的用户部分（整个窗口除了标题栏的部分）
+    setFixedSize(600, 450);                           //  固定 MainWindow 窗口大小
+    moveToCenter(this);                               //  把窗口移动到屏幕中间
 
-    setWindowIcon(QIcon(ICONPATH));                     //  设置窗口图标
-    setAttribute(Qt::WA_TranslucentBackground, true);   //  设置窗口透明
-    titlebar()->setBlurBackground(true);                //  设置标题栏模糊
-    titlebar()->setIcon(QIcon(ICONPATH));               //  设置标题栏图标
+    setWindowIcon(QIcon::fromTheme(ICONNAME));        //  设置窗口图标
+    setAttribute(Qt::WA_TranslucentBackground, true); //  设置窗口透明
+    titlebar()->setBlurBackground(true);              //  设置标题栏模糊
+    titlebar()->setIcon(QIcon::fromTheme(ICONNAME));  //  设置标题栏图标
 
     //  在标题栏上添加一个菜单 / 菜单项
     m_menu->addAction(m_newFile);
@@ -299,21 +299,24 @@ void MainWindow::openDesktopFile()
 void MainWindow::saveAsDesktopFile()
 {
     QString saveFile = QFileDialog::getSaveFileName(this, tr("Save As"), QDir::homePath() + WORKSPACE, tr("Desktop Entry Files (*.desktop)"));
-    //  判断文件名是否为空，以及上层目录是否可写入
-    if(!saveFile.isEmpty() && QFileInfo(QFileInfo(saveFile).absolutePath()).permissions().testFlag(QFile::WriteUser))
+    if(!saveFile.isEmpty())
     {
-        m_desktopFile = saveFile;
-        if(!saveFile.endsWith(".desktop"))
+        //  判断上层目录是否可写入
+        if(QFileInfo(QFileInfo(saveFile).absolutePath()).permissions().testFlag(QFile::WriteUser))
         {
-            m_desktopFile += ".desktop";
-            isSaveAs = true;    //  另存为文件时文件不存在，所以无法写入，需要判断
+            m_desktopFile = saveFile;
+            if(!saveFile.endsWith(".desktop"))
+            {
+                m_desktopFile += ".desktop";
+                isSaveAs = true;    //  另存为文件时文件不存在，所以无法写入，需要判断
+            }
+            createOrUpdateDesktopFile();
         }
-        createOrUpdateDesktopFile();
-    }
-    else
-    {
-        saveAsDesktopFile();
-        return;
+        else
+        {
+            saveAsDesktopFile();
+            return;
+        }
     }
 }
 
@@ -382,7 +385,11 @@ void MainWindow::createOrUpdateDesktopFile()
         m_parser->removeEntry(KeyNoDisplay);
     }
 
-    if(m_parser->value(KeyStartupWMClass).toString().isEmpty())
+    if(m_parser->value(KeyStartupWMClass).toString().isEmpty() && m_nameEdit->text().isEmpty())
+    {
+        m_parser->removeEntry(KeyStartupWMClass);
+    }
+    else
     {
         m_parser->setValue(KeyStartupWMClass, m_nameEdit->text());
     }
@@ -400,7 +407,11 @@ void MainWindow::createOrUpdateDesktopFile()
         case DMessageBox::Ok:
             return;
         case DMessageBox::Open:
-            QDesktopServices::openUrl(m_desktopFile);
+            //  该方法可以直接打开文件或文件夹，但是文件打开受默认打开的方式影响，而打开上层文件夹又无法选中文件位置，故舍弃
+            //  QDesktopServices::openUrl(QFileInfo(m_desktopFile).absolutePath());
+
+            //  依赖文件管理器显示文件所在文件位置，方便使用其他编辑器修改文件
+            system(QString("dde-file-manager --show-item " + m_desktopFile).toUtf8());
             break;
         default:
             return;
