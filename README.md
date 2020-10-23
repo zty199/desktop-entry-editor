@@ -1,6 +1,6 @@
 # desktop-entry-editor (forked from linuxdeepin/desktop-entry-editor)
 
-[Chinese](https://github.com/zty199/desktop-entry-editor/README_zh.md) | English
+[Chinese](https://gitee.com/deepin-opensource/desktop-entry-editor) | English
 
 A simple GUI tool to create and edit desktop files for Deepin, desinged using DTK.
 
@@ -28,7 +28,8 @@ Run build.sh to automatically build project and get deb in current dir.
 
 ## Credit
 
-linuxdeepin     https://github.com/linuxdeepin/desktop-entry-editor
-                https://linuxdeepin.github.io/dtk/
+linuxdeepin&emsp;<https://github.com/linuxdeepin/desktop-entry-editor>
 
-deepin-opensource       https://gitee.com/deepin-opensource/DtkDemo
+&emsp;&emsp;<https://linuxdeepin.github.io/dtk/>
+
+deepin-opensource&emsp;<https://gitee.com/deepin-opensource/DtkDemo>

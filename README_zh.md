@@ -1,6 +1,6 @@
 # 桌面快捷方式编辑器 (forked from linuxdeepin/desktop-entry-editor)
 
-中文 | [英文](https://github.com/zty199/desktop-entry-editor/README.md)
+中文 | [英文](https://github.com/zty199/desktop-entry-editor)
 
 一款简单的为 Deepin 打造的桌面快捷方式图形编辑工具，使用 DTK 设计。
 
@@ -28,8 +28,9 @@ libdtkwidget-dev
 
 ## 感谢
 
-linuxdeepin     <https://github.com/linuxdeepin/desktop-entry-editor/>
-                <https://linuxdeepin.github.io/dtk/>
+linuxdeepin&emsp;<https://github.com/linuxdeepin/desktop-entry-editor>
 
-deepin-opensource       <https://gitee.com/deepin-opensource/DtkDemo/>
+&emsp;&emsp;<https://linuxdeepin.github.io/dtk/>
+
+deepin-opensource&emsp;<https://gitee.com/deepin-opensource/DtkDemo>
 
