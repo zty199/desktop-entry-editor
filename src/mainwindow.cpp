@@ -170,10 +170,22 @@ void MainWindow::initDefaultValues()
     m_nodisplay->setChecked(false);
 
     m_categories->clear();
-    QStringList list;
-    list << tr("- Please Select -") << tr("Network") << tr("Chat") << tr("Music") << tr("Video") << tr("Graphics") << tr("Game") << tr("Office") << tr("Translation") << tr("Development") << tr("System") << tr("Others");
-    m_categories->addItems(list);
-    m_categories->setCurrentText(tr("- Please Select -"));
+    QMap<QString, QString> Categories;
+    Categories.insert(tr("- Please Select -"), "");
+    Categories.insert(tr("Network"), "Network");
+    Categories.insert(tr("Chat"), "Chat");
+    Categories.insert(tr("Music"), "Music");
+    Categories.insert(tr("Video"), "Video");
+    Categories.insert(tr("Graphics"), "Graphics");
+    Categories.insert(tr("Game"), "Game");
+    Categories.insert(tr("Office"), "Office");
+    Categories.insert(tr("Translation"), "Translation");
+    Categories.insert(tr("Development"), "Development");
+    Categories.insert(tr("System"), "System");
+    Categories.insert(tr("Others"), "Others");
+    foreach(const QString &str, Categories.keys())
+        m_categories->addItem(str, Categories.value(str));
+    m_categories->setCurrentIndex(0);
 }
 
 void MainWindow::initConnections()
@@ -222,17 +234,28 @@ void MainWindow::loadDesktopFile()
         m_mimetypeEdit->setText(m_parser->value(KeyMimeType).toString());
 
         m_categories->clear();
-        QStringList list;
+        QMap<QString, QString> Categories;
         if(m_parser->value(KeyCategories).toString().isEmpty())
         {
-            list << tr("- Please Select -");
+            Categories.insert(tr("- Please Select -"), "");
         }
         else
         {
-            list << m_parser->value(KeyCategories).toString();
+            Categories.insert(m_parser->value(KeyCategories).toString(), m_parser->value(KeyCategories).toString());
         }
-        list << tr("Network") << tr("Chat") << tr("Music") << tr("Video") << tr("Graphics") << tr("Game") << tr("Office") << tr("Translation") << tr("Development") << tr("System") << tr("Others");
-        m_categories->addItems(list);
+        Categories.insert(tr("Network"), "Network");
+        Categories.insert(tr("Chat"), "Chat");
+        Categories.insert(tr("Music"), "Music");
+        Categories.insert(tr("Video"), "Video");
+        Categories.insert(tr("Graphics"), "Graphics");
+        Categories.insert(tr("Game"), "Game");
+        Categories.insert(tr("Office"), "Office");
+        Categories.insert(tr("Translation"), "Translation");
+        Categories.insert(tr("Development"), "Development");
+        Categories.insert(tr("System"), "System");
+        Categories.insert(tr("Others"), "Others");
+        foreach(const QString &str, Categories.keys())
+            m_categories->addItem(str, Categories.value(str));
         m_categories->setCurrentIndex(0);
 
         m_terminal->setChecked(m_parser->value(KeyTerminal).toBool());
@@ -354,13 +377,13 @@ void MainWindow::createOrUpdateDesktopFile()
         m_parser->removeEntry(KeyComment);
     }
 
-    if(m_categories->currentIndex() == 0 && m_categories->currentText() != tr("- Please Select -"))
+    if(m_categories->currentIndex() == 0 && !m_categories->currentData().toString().isEmpty())
     {
-        m_parser->setValue(KeyCategories, m_categories->currentText());
+        m_parser->setValue(KeyCategories, m_categories->currentData());
     }
     else if(m_categories->currentIndex() != 0)
     {
-        m_parser->setValue(KeyCategories, m_categories->currentText() + ";");
+        m_parser->setValue(KeyCategories, m_categories->currentData().toString() + ";");
     }
     else
     {
@@ -411,7 +434,8 @@ void MainWindow::createOrUpdateDesktopFile()
             //  QDesktopServices::openUrl(QFileInfo(m_desktopFile).absolutePath());
 
             //  依赖文件管理器显示文件所在文件位置，方便使用其他编辑器修改文件
-            system(QString("dde-file-manager --show-item " + m_desktopFile).toUtf8());
+            process = new QProcess;
+            process->start("dde-file-manager --show-item " + m_desktopFile);    //  非阻塞调用外部程序，不需要等待结束
             break;
         default:
             return;

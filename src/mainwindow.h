@@ -2,6 +2,7 @@
 #define MAINWINDOW_H
 
 #include <QWidget>
+#include <QProcess>
 
 #include <DMainWindow>
 #include <DBlurEffectWidget>
@@ -53,6 +54,8 @@ private:
     DPushButton *m_exit;
 
     XdgDesktopFile *m_parser;
+
+    QProcess *process;
 
     QString m_iconFile;
     QString m_desktopFile;

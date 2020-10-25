@@ -16,11 +16,11 @@ libqt5gui5
 
 libqt5widgets5
 
-libdtkcore-dev
+libdtkcore-dev (>= 5.2.2.15-1)
 
-libdtkgui-dev
+libdtkgui-dev (>= 5.2.2.18-1)
 
-libdtkwidget-dev
+libdtkwidget-dev (>= 5.2.2.16-1)
 
 ## 构建方式
 
@@ -30,7 +30,7 @@ libdtkwidget-dev
 
 linuxdeepin&emsp;<https://github.com/linuxdeepin/desktop-entry-editor>
 
-&emsp;&emsp;<https://linuxdeepin.github.io/dtk/>
+linuxdeepin&emsp;<https://linuxdeepin.github.io/dtk/>
 
 deepin-opensource&emsp;<https://gitee.com/deepin-opensource/DtkDemo>
 
