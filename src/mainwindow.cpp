@@ -39,8 +39,7 @@ MainWindow::MainWindow(DMainWindow *parent)
       m_icon(new DLabel),
       m_iconTip(new DLabel),
       m_confirm(new DPushButton),
-      m_exit(new DPushButton),
-      m_parser(new XdgDesktopFile)
+      m_exit(new DPushButton)
 {
     initUI();               //  初始化主窗口
     initDefaultValues();    //  初始化默认值
@@ -149,6 +148,8 @@ void MainWindow::initDefaultValues()
     m_desktopFile = nullptr;
     fileName = nullptr;
     isSaveAs = false;
+
+    m_parser = new XdgDesktopFile;  //  清空当前文件
 
     m_icon->installEventFilter(this);                   //  响应点击图标事件
     m_icon->setPixmap(QIcon::fromTheme("application-x-executable").pixmap(128, 128));
