@@ -4,12 +4,12 @@
 <context>
     <name>About</name>
     <message>
-        <location filename="../about.cpp" line="9"/>
+        <location filename="../about.cpp" line="7"/>
         <source>Desktop Entry Editor</source>
         <translation>桌面快捷方式编辑器</translation>
     </message>
     <message>
-        <location filename="../about.cpp" line="12"/>
+        <location filename="../about.cpp" line="10"/>
         <source>Version: </source>
         <translation>版本： </translation>
     </message>
@@ -43,9 +43,40 @@
         <translation>确认</translation>
     </message>
     <message>
+        <location filename="../mainwindow.cpp" line="39"/>
         <location filename="../mainwindow.cpp" line="162"/>
         <source>Exit</source>
         <translation>退出</translation>
+    </message>
+    <message>
+        <location filename="../mainwindow.cpp" line="33"/>
+        <source>Settings</source>
+        <translation>设置</translation>
+    </message>
+    <message>
+        <location filename="../mainwindow.cpp" line="34"/>
+        <source>Theme</source>
+        <translation>主题</translation>
+    </message>
+    <message>
+        <location filename="../mainwindow.cpp" line="35"/>
+        <source>Light theme</source>
+        <translation>浅色</translation>
+    </message>
+    <message>
+        <location filename="../mainwindow.cpp" line="36"/>
+        <source>Dark theme</source>
+        <translation>深色</translation>
+    </message>
+    <message>
+        <location filename="../mainwindow.cpp" line="37"/>
+        <source>System theme</source>
+        <translation>跟随系统</translation>
+    </message>
+    <message>
+        <location filename="../mainwindow.cpp" line="38"/>
+        <source>About</source>
+        <translation>关于</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="174"/>
@@ -232,7 +263,7 @@
         <translation type="vanished">&lt;a href=&apos;https://github.com/zty199/desktop-entry-editor&apos;&gt;https://github.com/zty199/desktop-entry-editor&lt;/a&gt;&lt;br/&gt;&lt;br/&gt;一款简单的为 Deepin 打造的桌面快捷方式图形编辑工具&lt;br/&gt;使用 DTK 设计&lt;br/&gt;&lt;br/&gt;&lt;span style=&apos;font-size:10pt;font-weight:60;&apos;&gt;深度社区 出品&lt;/span&gt;&lt;br/&gt;&lt;a href=&apos;https://www.deepinos.org/&apos;&gt;&lt;span style=&apos;font-size:12pt;&apos;&gt;星火社区开发者联盟&lt;/span&gt;&lt;/a&gt;&lt;br/&gt;&lt;br/&gt;遵循 GPL V3 发布</translation>
     </message>
     <message>
-        <location filename="../about.cpp" line="22"/>
+        <location filename="../about.cpp" line="20"/>
         <source>&lt;a href=&apos;https://github.com/zty199/desktop-entry-editor&apos;&gt;https://github.com/zty199/desktop-entry-editor&lt;/a&gt;&lt;br/&gt;&lt;br/&gt;A simple GUI tool to create and edit desktop files&lt;br/&gt;Desinged for Deepin&lt;br/&gt;&lt;br/&gt;Powered by Deepin Community&lt;br/&gt;&lt;a href=&apos;https://www.deepinos.org/&apos;&gt;&lt;span style=&apos;font-size:14pt;&apos;&gt;Spark developers&lt;/span&gt;&lt;/a&gt;&lt;br/&gt;&lt;br/&gt;Published under GPL V3</source>
         <translation>&lt;a href=&apos;https://github.com/zty199/desktop-entry-editor&apos;&gt;https://github.com/zty199/desktop-entry-editor&lt;/a&gt;&lt;br/&gt;&lt;br/&gt;一款简单的桌面快捷方式图形编辑工具&lt;br/&gt;为 Deepin 设计&lt;br/&gt;&lt;br/&gt;深度社区 出品&lt;br/&gt;&lt;a href=&apos;https://www.deepinos.org/&apos;&gt;&lt;span style=&apos;font-size:14pt;&apos;&gt;星火社区开发者联盟&lt;/span&gt;&lt;/a&gt;&lt;br/&gt;&lt;br/&gt;遵循 GPL V3 发布</translation>
     </message>
