@@ -1,4 +1,5 @@
 #include "mainwindow.h"
+#include "config.h"
 
 #include <QMimeData>
 #include <QDragEnterEvent>
@@ -29,6 +30,13 @@ MainWindow::MainWindow(DMainWindow *parent)
       m_openFile(new QAction(tr("Open"))),
       m_saveFile(new QAction(tr("Save"))),
       m_saveAs(new QAction(tr("Save As"))),
+      m_settings(new QAction("Settings")),
+      m_theme(new QMenu("Theme")),
+      m_lighttheme(new QAction("Light theme")),
+      m_darktheme(new QAction("Dark theme")),
+      m_systemtheme(new QAction("System theme")),
+      m_about(new QAction("About")),
+      m_exit1(new QAction("Exit")),
       m_nameEdit(new DLineEdit),
       m_execEdit(new DFileChooserEdit),
       m_commentEdit(new DLineEdit),
@@ -39,17 +47,21 @@ MainWindow::MainWindow(DMainWindow *parent)
       m_icon(new DLabel),
       m_iconTip(new DLabel),
       m_confirm(new DPushButton),
-      m_exit(new DPushButton)
+      m_exit2(new DPushButton)
 {
+    checkWorkspace();       //  检查工作区
+    initThemeMenu();        //  初始化主题子菜单
+    initSettings();         //  初始化设置
     initUI();               //  初始化主窗口
     initDefaultValues();    //  初始化默认值
     initConnections();      //  初始化槽函数
-    checkWorkspace();       //  检查工作区
 }
 
 MainWindow::~MainWindow()
 {
     delete w;
+    delete s;
+    delete a;
 }
 
 void MainWindow::setDesktopFile(QString file)
@@ -64,33 +76,91 @@ void MainWindow::setDesktopFile(QString file)
     }
 }
 
+void MainWindow::checkWorkspace()
+{
+    QDir workspace;
+    if(!workspace.exists(QDir::homePath() + SAVEPATH))
+    {
+        workspace.mkdir(QDir::homePath() + SAVEPATH);
+    }
+    if(!workspace.exists(QDir::homePath() + CONFIGPATH))
+    {
+        workspace.mkdir(QDir::homePath() + CONFIGPATH);
+    }
+}
+
+void MainWindow::initThemeMenu()
+{
+    m_lighttheme->setCheckable(true);
+    m_darktheme->setCheckable(true);
+    m_systemtheme->setCheckable(true);
+    m_lighttheme->setChecked(false);
+    m_darktheme->setChecked(false);
+    m_systemtheme->setChecked(false);
+}
+
+void MainWindow::initSettings()
+{
+    QFile config(QDir::homePath() + CONFIGPATH + "config.ini");
+    if(config.exists())
+    {
+        opacity = Config().getSettings("settings", "opacity").toInt();
+        if(opacity < 0 || opacity > 255)
+        {
+            opacity = 200;
+        }
+        s->getSlider()->setValue(opacity);
+
+        blur = Config().getSettings("settings", "blur").toBool();
+        s->getSwitchButton()->setChecked(blur);
+
+        theme = Config().getSettings("settings", "theme").toString();
+
+        setBackgroundColor(theme, opacity, blur);
+    }
+}
+
 void MainWindow::initUI()
 {
-    setCentralWidget(w);                              //  将 w 作为窗口的用户部分（整个窗口除了标题栏的部分）
-    setFixedSize(600, 450);                           //  固定 MainWindow 窗口大小
-    moveToCenter(this);                               //  把窗口移动到屏幕中间
+    setCentralWidget(w);                                //  将 w 作为窗口的用户部分（整个窗口除了标题栏的部分）
+    setFixedSize(600, 450);                             //  固定 MainWindow 窗口大小
+    moveToCenter(this);                                 //  把窗口移动到屏幕中间
 
-    setWindowIcon(QIcon::fromTheme(ICONNAME));        //  设置窗口图标
-    setAttribute(Qt::WA_TranslucentBackground, true); //  设置窗口透明
-    titlebar()->setBlurBackground(true);              //  设置标题栏模糊
-    titlebar()->setIcon(QIcon::fromTheme(ICONNAME));  //  设置标题栏图标
+    setWindowIcon(QIcon::fromTheme(ICONNAME));          //  设置窗口图标
+    setAttribute(Qt::WA_TranslucentBackground, true);   //  设置窗口透明
+    setEnableBlurWindow(blur);                          //  设置窗口模糊
+    titlebar()->setIcon(QIcon::fromTheme(ICONNAME));    //  设置标题栏图标
+    //  titlebar()->setBackgroundTransparent(true);         //  设置标题栏透明
+    //  setTitlebarShadowEnabled(false);                    //  关闭标题栏阴影
+
+    w->setAutoFillBackground(true);                     //  背景自动填充
+    //  titlebar()->setAutoFillBackground(true);
+
+    titlebar()->setQuitMenuDisabled(true);              //  关闭原生菜单
 
     //  在标题栏上添加一个菜单 / 菜单项
     m_menu->addAction(m_newFile);
     m_menu->addAction(m_openFile);
-    m_menu->addSeparator();
     m_menu->addAction(m_saveFile);
     m_menu->addAction(m_saveAs);
     m_menu->addSeparator();
+    m_menu->addAction(m_settings);
+    m_theme->addAction(m_lighttheme);
+    m_theme->addAction(m_darktheme);
+    m_theme->addAction(m_systemtheme);
+    m_menu->addMenu(m_theme);
+    m_menu->addSeparator();
+    m_menu->addAction(m_about);
+    m_menu->addAction(m_exit1);
     titlebar()->setMenu(m_menu);
 
     //  初始化按钮
     m_confirm->setIcon(QIcon::fromTheme("dialog-apply").pixmap(64, 64));
     m_confirm->setText(tr("Confirm"));
     m_confirm->setFixedSize(100, 50);
-    m_exit->setIcon(QIcon::fromTheme("dialog-cancel").pixmap(64, 64));
-    m_exit->setText(tr("Exit"));
-    m_exit->setFixedSize(100, 50);
+    m_exit2->setIcon(QIcon::fromTheme("dialog-cancel").pixmap(64, 64));
+    m_exit2->setText(tr("Exit"));
+    m_exit2->setFixedSize(100, 50);
 
     //  页面布局
     QVBoxLayout *leftLayout = new QVBoxLayout;
@@ -128,7 +198,7 @@ void MainWindow::initUI()
     bottomLayout->setAlignment(Qt::AlignCenter);
     bottomLayout->addWidget(m_confirm);
     bottomLayout->addSpacing(80);
-    bottomLayout->addWidget(m_exit);
+    bottomLayout->addWidget(m_exit2);
 
     QVBoxLayout *mainLayout = new QVBoxLayout;
     mainLayout->setAlignment(Qt::AlignCenter);
@@ -148,8 +218,7 @@ void MainWindow::initDefaultValues()
     m_desktopFile = nullptr;
     fileName = nullptr;
     isSaveAs = false;
-
-    m_parser = new XdgDesktopFile;  //  清空当前文件
+    m_parser = new XdgDesktopFile;                      //  清空当前文件
 
     m_icon->installEventFilter(this);                   //  响应点击图标事件
     m_icon->setPixmap(QIcon::fromTheme("application-x-executable").pixmap(128, 128));
@@ -195,17 +264,18 @@ void MainWindow::initConnections()
     connect(m_openFile, &QAction::triggered, this, [ = ] () { openDesktopFile(); });
     connect(m_saveFile, &QAction::triggered, this, [ = ] () { createOrUpdateDesktopFile(); });
     connect(m_saveAs, &QAction::triggered, this, [ = ] () { saveAsDesktopFile(); });
+    connect(m_settings, &QAction::triggered, this, [ = ] () { s->show(); });
+    connect(m_lighttheme, &QAction::triggered, this, [ = ] () { setBackgroundColor("Light", opacity, blur); });
+    connect(m_darktheme, &QAction::triggered, this, [ = ] () { setBackgroundColor("Dark", opacity, blur); });
+    connect(m_systemtheme, &QAction::triggered, this, [ = ] () { setBackgroundColor("", opacity, blur); });
+    connect(m_about, &QAction::triggered, this, [ = ] () { a->show(); });
+    connect(m_exit1, &QAction::triggered, this, [ = ] () { exitEditor(); });
     connect(m_confirm, SIGNAL(clicked()), this, SLOT(createOrUpdateDesktopFile()));
-    connect(m_exit, SIGNAL(clicked()), this, SLOT(exitEditor()));
-}
+    connect(m_exit2, SIGNAL(clicked()), this, SLOT(exitEditor()));
 
-void MainWindow::checkWorkspace()
-{
-    QDir workspace;
-    if(!workspace.exists(QDir::homePath() + WORKSPACE))
-    {
-        workspace.mkdir(QDir::homePath() + WORKSPACE);
-    }
+    connect(DGuiApplicationHelper::instance(), &DGuiApplicationHelper::themeTypeChanged, this, [ = ] { setBackgroundColor(theme, opacity, blur); });
+    connect(slider, SIGNAL(valueChanged(int)), this, SLOT(setOpacity(int)));
+    connect(switchbutton, SIGNAL(toggled(bool)), this, SLOT(setBlur(bool)));
 }
 
 void MainWindow::loadDesktopFile()
@@ -274,6 +344,16 @@ void MainWindow::loadDesktopFile()
     }
 }
 
+void MainWindow::closeEvent(QCloseEvent *event)
+{
+    Config().setSettings("settings", "opacity", opacity);
+    Config().setSettings("settings", "blur", blur);
+    Config().setSettings("settings", "theme", theme);
+    s->close();
+    a->close();
+    event->accept();
+}
+
 void MainWindow::dragEnterEvent(QDragEnterEvent *event)
 {
     if(event->mimeData()->hasFormat("text/uri-list"))
@@ -322,7 +402,7 @@ void MainWindow::openDesktopFile()
 
 void MainWindow::saveAsDesktopFile()
 {
-    QString saveFile = QFileDialog::getSaveFileName(this, tr("Save As"), QDir::homePath() + WORKSPACE, tr("Desktop Entry Files (*.desktop)"));
+    QString saveFile = QFileDialog::getSaveFileName(this, tr("Save As"), QDir::homePath() + SAVEPATH, tr("Desktop Entry Files (*.desktop)"));
     if(!saveFile.isEmpty())
     {
         //  判断上层目录是否可写入
@@ -342,6 +422,76 @@ void MainWindow::saveAsDesktopFile()
             return;
         }
     }
+}
+
+void MainWindow::setOpacity(int value)
+{
+    opacity = value;
+    setBackgroundColor(theme, opacity, blur);
+}
+
+void MainWindow::setBlur(bool flag)
+{
+    blur = flag;
+    setBackgroundColor(theme, opacity, blur);
+}
+
+void MainWindow::setBackgroundColor(QString str, int value, bool flag)
+{
+    theme = str;
+    opacity = value;
+    blur = flag;
+
+    QPalette palette;
+    /*
+     * 设置背景图片
+     * palette.setBrush(QPalette::Background, QBrush(QPixmap(":/background.png")));
+     */
+
+    if(theme == "Light")
+    {
+        m_lighttheme->setChecked(true);
+        m_darktheme->setChecked(false);
+        m_systemtheme->setChecked(false);
+        m_theme->update();
+
+        DGuiApplicationHelper::instance()->setPaletteType(DGuiApplicationHelper::LightType);
+
+        palette.setColor(QPalette::Background, QColor(240, 240, 240, opacity));
+    }
+    else if(theme == "Dark")
+    {
+        m_lighttheme->setChecked(false);
+        m_darktheme->setChecked(true);
+        m_systemtheme->setChecked(false);
+        m_theme->update();
+
+        DGuiApplicationHelper::instance()->setPaletteType(DGuiApplicationHelper::DarkType);
+
+        palette.setColor(QPalette::Background, QColor(40, 40, 40, opacity));
+    }
+    else
+    {
+        m_lighttheme->setChecked(false);
+        m_darktheme->setChecked(false);
+        m_systemtheme->setChecked(true);
+        m_theme->update();
+
+        DGuiApplicationHelper::instance()->setPaletteType(DGuiApplicationHelper::UnknownType);
+
+        if(DGuiApplicationHelper::instance()->themeType() == DGuiApplicationHelper::LightType)
+        {
+            palette.setColor(QPalette::Background, QColor(240, 240, 240, opacity)); //  设置 RGBA
+        }
+        else
+        {
+            palette.setColor(QPalette::Background, QColor(40, 40, 40, opacity));
+        }
+    }
+    w->setPalette(palette);
+    //  titlebar()->setPalette(palette);
+
+    setEnableBlurWindow(blur);
 }
 
 void MainWindow::chooseIcon()
@@ -431,9 +581,6 @@ void MainWindow::createOrUpdateDesktopFile()
         case DMessageBox::Ok:
             return;
         case DMessageBox::Open:
-            //  该方法可以直接打开文件或文件夹，但是文件打开受默认打开的方式影响，而打开上层文件夹又无法选中文件位置，故舍弃
-            //  QDesktopServices::openUrl(QFileInfo(m_desktopFile).absolutePath());
-
             //  依赖文件管理器显示文件所在文件位置，方便使用其他编辑器修改文件
             process = new QProcess;
             process->start("dde-file-manager --show-item " + m_desktopFile);    //  非阻塞调用外部程序，不需要等待结束

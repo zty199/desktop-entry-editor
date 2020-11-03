@@ -28,10 +28,19 @@ PKGCONFIG += dtkwidget Qt5Xdg
 
 SOURCES += \
         main.cpp \
-        mainwindow.cpp
+        mainwindow.cpp \
+        config.cpp \
+        settings.cpp \
+        about.cpp
 
 HEADERS += \
-        mainwindow.h
+        mainwindow.h \
+        config.h \
+        settings.h \
+        about.h
+
+FORMS += \
+      settings.ui
 
 TRANSLATIONS += \
              translations/desktop-entry-editor_zh_CN.ts

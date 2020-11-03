@@ -2,7 +2,7 @@
 
 中文 | [英文](https://github.com/zty199/desktop-entry-editor)
 
-一款简单的为 Deepin 打造的桌面快捷方式图形编辑工具，使用 DTK 设计。
+一款简单的桌面快捷方式图形编辑工具，为 Deepin 设计。
 
 ## 依赖
 

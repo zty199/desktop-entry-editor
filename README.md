@@ -2,7 +2,7 @@
 
 [Chinese](https://gitee.com/deepin-opensource/desktop-entry-editor) | English
 
-A simple GUI tool to create and edit desktop files for Deepin, desinged using DTK.
+A simple GUI tool to create and edit desktop files, designed for Deepin.
 
 ## Dependencies
 
