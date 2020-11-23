@@ -128,7 +128,6 @@ void MainWindow::initUI()
 
     setWindowIcon(QIcon::fromTheme(ICONNAME));          //  设置窗口图标
     setAttribute(Qt::WA_TranslucentBackground, true);   //  设置窗口透明
-    setEnableBlurWindow(blur);                          //  设置窗口模糊
     titlebar()->setIcon(QIcon::fromTheme(ICONNAME));    //  设置标题栏图标
     //  titlebar()->setBackgroundTransparent(true);         //  设置标题栏透明
     //  setTitlebarShadowEnabled(false);                    //  关闭标题栏阴影
@@ -496,7 +495,7 @@ void MainWindow::setBackgroundColor(QString str, int value, bool flag)
 
 void MainWindow::chooseIcon()
 {
-    QString iconFile = QFileDialog::getOpenFileName(this, tr("Select icon"), QDir::homePath(), tr("Image Files (*.png *.jpg *.svg)"));
+    QString iconFile = QFileDialog::getOpenFileName(this, tr("Select icon"), QDir::homePath(), tr("Image Files (*.png *.jpg *.svg *.xpm)"));
     if(!iconFile.isEmpty())
     {
         m_iconFile = iconFile;
@@ -515,13 +514,13 @@ void MainWindow::createOrUpdateDesktopFile()
 
     m_parser->setValue(KeyEncoding, "UTF-8");
     m_parser->setValue(KeyType, "Application");
-    m_parser->setValue(KeyName, m_nameEdit->text());
-    m_parser->setValue(KeyExec, m_execEdit->text());
+    m_parser->setValue(KeyName, m_nameEdit->text().toUtf8());
+    m_parser->setValue(KeyExec, m_execEdit->text().toUtf8());
     m_parser->setValue(KeyIcon, m_iconFile);
 
     if(!m_commentEdit->text().isEmpty())
     {
-        m_parser->setValue(KeyComment, m_commentEdit->text());
+        m_parser->setValue(KeyComment, m_commentEdit->text().toUtf8());
     }
     else
     {
@@ -565,7 +564,7 @@ void MainWindow::createOrUpdateDesktopFile()
     }
     else
     {
-        m_parser->setValue(KeyStartupWMClass, m_nameEdit->text());
+        m_parser->setValue(KeyStartupWMClass, m_nameEdit->text().toUtf8());
     }
 
     m_parser->setValue(KeyMimeType, m_mimetypeEdit->text());

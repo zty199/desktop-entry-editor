@@ -3,28 +3,30 @@
 About::About(DAboutDialog *parent) :
     DAboutDialog(parent)
 {
-    setProductIcon(QIcon::fromTheme(ICONNAME)); //  设置产品图标
-    setProductName(tr("Desktop Entry Editor")); //  设置产品名称
+    setWindowIcon(QIcon::fromTheme(ICONNAME));          //  设置窗口图标
+    setProductIcon(QIcon::fromTheme(ICONNAME));         //  设置产品图标
+    setProductName(tr("Desktop Entry Editor"));         //  设置产品名称
+    setVersion(QString(tr("Version: %1")).arg("1.3"));  //  设置应用版本
 
-    //  设置应用版本
-    QString version = tr("Version: ");
-    version += "1.2";
-    setVersion(version);
-
-    //  setCompanyLogo();                           //  设置公司图标
-    //  setWebsiteName("");                         //  设置官网名称
-    //  setWebsiteLink("");                         //  设置官网链接
+    //  setCompanyLogo();                               //  设置公司图标
+    //  setWebsiteName("");                             //  设置官网名称
+    //  setWebsiteLink("");                             //  设置官网链接
 
     //  设置应用描述
     setDescription(
-                QObject::tr(
+                QString(
                     "<a href='https://github.com/zty199/desktop-entry-editor'>https://github.com/zty199/desktop-entry-editor</a><br/><br/>"
-                    "A simple GUI tool to create and edit desktop files<br/>Desinged for Deepin<br/><br/>"
-                    "Powered by Deepin Community<br/>"
-                    "<a href='https://www.deepinos.org/'><span style='font-size:14pt;'>Spark developers</span></a><br/><br/>"
-                    "Published under GPL V3"
-                )
-    );
+                    "%1<br/>%2<br/><br/>"
+                    "%3<br/>"
+                    "<a href='https://www.deepinos.org/'><span style='font-size:14pt;'>%4</span></a><br/><br/>"
+                    )
+                .arg(tr("A simple GUI tool to create and edit desktop files"))
+                .arg(tr("Desinged for Deepin"))
+                .arg(tr("Powered by Deepin Community"))
+                .arg(tr("Spark Developers"))
+                );
+
+    setLicense(tr("Published under GPL V3"));
 }
 
 About::~About()

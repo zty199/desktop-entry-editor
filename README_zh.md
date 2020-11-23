@@ -6,7 +6,7 @@
 
 ## 依赖
 
-qt-default
+qt5-default
 
 qtcreator (推荐使用 Qt Creator 打开项目进行构建)
 
@@ -16,11 +16,15 @@ libqt5gui5
 
 libqt5widgets5
 
+libqt5xdg-dev
+
 libdtkcore-dev (>= 5.2.2.15-1)
 
 libdtkgui-dev (>= 5.2.2.18-1)
 
 libdtkwidget-dev (>= 5.2.2.16-1)
+
+dde-file-manager
 
 ## 构建方式
 

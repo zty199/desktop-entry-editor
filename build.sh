@@ -32,21 +32,17 @@ eval "TIP6=\$TIP6_${LANG}"
 eval "TIP7=\$TIP7_${LANG}"
 
 # 编译 | Compile
-echo "$TIP1"
-echo -e
+echo -e "$TIP1\n"
 
 mkdir -p build && cd build
 /usr/lib/qt5/bin/qmake ../src/desktop-entry-editor.pro -spec linux-g++ CONFIG+=qtquickcompiler && /usr/bin/make qmake_all
 make -j4
 cd ..
 
-echo -e
-echo "$TIP2"
-echo -e
+echo -e "\n$TIP2\n"
 
 # 打包 | Build deb
-echo "$TIP3"
-echo -e
+echo -e "$TIP3\n"
 
 mkdir -p ./deb_uos/opt/apps/com.gitee.deepin-opensource.desktop-entry-editor/files/bin/
 mkdir -p ./deb_uos/opt/apps/com.gitee.deepin-opensource.desktop-entry-editor/files/share/desktop-entry-editor/translations/
@@ -56,25 +52,20 @@ cp ./src/translations/desktop-entry-editor_zh_CN.qm ./deb_uos/opt/apps/com.gitee
 
 find ./deb_uos/opt -type f -print0 | xargs -0 md5sum > ./deb_uos/DEBIAN/md5sums && sed -i "s#./deb_uos/opt#/opt#" ./deb_uos/DEBIAN/md5sums
 
-echo "$TIP4"
-echo -e
+echo -e "$TIP4\n"
 
 cat ./deb_uos/DEBIAN/control
 
-echo "-------------------------"
-echo -e
+echo -e "-------------------------\n"
 
 version=$(cat ./deb_uos/DEBIAN/control | grep "Version" | awk -F ' '  '{print $2}')
 
 fakeroot dpkg -b ./deb_uos ./com.gitee.deepin-opensource.desktop-entry-editor_"$version"_amd64.deb
 
-echo -e
-echo "$TIP5"
-echo -e
+echo -e "\n$TIP5\n"
 
 # 清除模板中的文件 | Delete temp files
-echo "$TIP6"
-echo -e
+echo -e "$TIP6\n"
 
 rm -rf ./deb_uos/DEBIAN/md5sums
 rm -rf ./deb_uos/opt/apps/com.gitee.deepin-opensource.desktop-entry-editor/files/*
@@ -82,6 +73,6 @@ rm -rf ./deb_uos/opt/apps/com.gitee.deepin-opensource.desktop-entry-editor/files
 # rm -rf ./build
 
 # 按任意键退出 | Press any key to exit
-echo "$TIP7"
+echo -e "$TIP7"
 
 read

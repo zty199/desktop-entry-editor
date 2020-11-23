@@ -6,7 +6,7 @@ A simple GUI tool to create and edit desktop files, designed for Deepin.
 
 ## Dependencies
 
-qt-default
+qt5-default
 
 qtcreator (Recommended)
 
@@ -16,11 +16,15 @@ libqt5gui5
 
 libqt5widgets5
 
+libqt5xdg-dev
+
 libdtkcore-dev (>= 5.2.2.15-1)
 
 libdtkgui-dev (>= 5.2.2.18-1)
 
 libdtkwidget-dev (>= 5.2.2.16-1)
+
+dde-file-manager
 
 ## Build
 

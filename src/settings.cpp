@@ -36,7 +36,6 @@ void Settings::initUI()
 
     setMaskAlpha(200);
 
-    ui->titlebar->setTitle("Settings");
     ui->titlebar->setBackgroundTransparent(true);
     ui->titlebar->setMenuDisabled(true);
     ui->titlebar->setMenuVisible(false);
