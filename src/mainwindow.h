@@ -2,7 +2,6 @@
 #define MAINWINDOW_H
 
 #include <QWidget>
-#include <QProcess>
 #include <QSlider>
 
 #include <DMainWindow>
@@ -12,6 +11,7 @@
 #include <DSwitchButton>
 #include <DComboBox>
 #include <DPushButton>
+#include <DMessageManager>
 
 #include <XdgDesktopFile>
 
@@ -53,7 +53,7 @@ private:
     QAction *m_darktheme;
     QAction *m_systemtheme;
     QAction *m_about;
-    QAction *m_exit1;
+    QAction *m_exit;
 
     DLineEdit *m_nameEdit;
     DLineEdit *m_execEdit;
@@ -65,12 +65,10 @@ private:
     DLabel *m_icon;
     DLabel *m_iconTip;
 
-    DPushButton *m_confirm;
-    DPushButton *m_exit2;
-
     XdgDesktopFile *m_parser;
 
-    QProcess *process;
+    DPushButton *open;
+    DFloatingMessage *message;
 
     QSlider* slider = s->getSlider();
     DSwitchButton* switchbutton = s->getSwitchButton();
@@ -94,6 +92,7 @@ private:
     void closeEvent(QCloseEvent *event);
     void dropEvent(QDropEvent *event);
     void dragEnterEvent(QDragEnterEvent *event);
+    void keyPressEvent(QKeyEvent *event);
     bool eventFilter(QObject *obj, QEvent *event);
 
 private slots:

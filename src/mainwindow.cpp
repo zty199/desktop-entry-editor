@@ -1,15 +1,14 @@
 #include "mainwindow.h"
 #include "config.h"
 
+#include <QProcess>
 #include <QMimeData>
 #include <QDragEnterEvent>
 #include <QDropEvent>
-#include <QDesktopServices>
 
 #include <DWidgetUtil>  //  Dtk::Widget::moveToCenter(&w); 要调用它，就得引用 DWidgetUtil
 #include <DTitlebar>
-#include <DFileDialog>
-#include <DMessageBox>
+#include <DHorizontalLine>
 
 static const QString KeyEncoding = "Encoding";
 static const QString KeyType = "Type";
@@ -36,7 +35,7 @@ MainWindow::MainWindow(DMainWindow *parent)
       m_darktheme(new QAction(tr("Dark theme"))),
       m_systemtheme(new QAction(tr("System theme"))),
       m_about(new QAction(tr("About"))),
-      m_exit1(new QAction(tr("Exit"))),
+      m_exit(new QAction(tr("Exit"))),
       m_nameEdit(new DLineEdit),
       m_execEdit(new DFileChooserEdit),
       m_commentEdit(new DLineEdit),
@@ -46,8 +45,8 @@ MainWindow::MainWindow(DMainWindow *parent)
       m_nodisplay(new DSwitchButton),
       m_icon(new DLabel),
       m_iconTip(new DLabel),
-      m_confirm(new DPushButton),
-      m_exit2(new DPushButton)
+      open(new DPushButton(tr("Open"))),
+      message(new DFloatingMessage(DFloatingMessage::ResidentType))
 {
     checkWorkspace();       //  检查工作区
     initThemeMenu();        //  初始化主题子菜单
@@ -137,7 +136,7 @@ void MainWindow::initUI()
 
     titlebar()->setQuitMenuDisabled(true);              //  关闭原生菜单
 
-    //  在标题栏上添加一个菜单 / 菜单项
+    /* 在标题栏上添加一个菜单 / 菜单项 */
     m_menu->addAction(m_newFile);
     m_menu->addAction(m_openFile);
     m_menu->addAction(m_saveFile);
@@ -150,18 +149,15 @@ void MainWindow::initUI()
     m_menu->addMenu(m_theme);
     m_menu->addSeparator();
     m_menu->addAction(m_about);
-    m_menu->addAction(m_exit1);
+    m_menu->addAction(m_exit);
     titlebar()->setMenu(m_menu);
 
-    //  初始化按钮
-    m_confirm->setIcon(QIcon::fromTheme("dialog-apply").pixmap(64, 64));
-    m_confirm->setText(tr("Confirm"));
-    m_confirm->setFixedSize(100, 50);
-    m_exit2->setIcon(QIcon::fromTheme("dialog-cancel").pixmap(64, 64));
-    m_exit2->setText(tr("Exit"));
-    m_exit2->setFixedSize(100, 50);
+    /* 初始化保存文件成功提示信息 */
+    message->setIcon(QIcon::fromTheme("dialog-ok").pixmap(64, 64));
+    message->setWidget(open);
+    message->hide();
 
-    //  页面布局
+    /* 页面布局 */
     QVBoxLayout *leftLayout = new QVBoxLayout;
     leftLayout->setAlignment(Qt::AlignCenter);
     leftLayout->addWidget(m_icon);
@@ -180,32 +176,26 @@ void MainWindow::initUI()
     rightLayout->addWidget(m_mimetypeEdit, 3, 1, 1, 2);
     rightLayout->addWidget(new QLabel(tr("Categories")), 4, 0);
     rightLayout->addWidget(m_categories, 4, 1, 1, 2);
-    rightLayout->addWidget(new QLabel(tr("Run in Terminal")), 5, 0, 1, 2);
-    rightLayout->addWidget(m_terminal, 5, 2, 1, 1);
-    rightLayout->addWidget(new QLabel(tr("Not Display in Launcher")), 6, 0, 1, 2);
-    rightLayout->addWidget(m_nodisplay, 6, 2, 1, 1);
+    rightLayout->addWidget(new DHorizontalLine, 5, 0, 1, 3);
+    rightLayout->addWidget(new QLabel(tr("Run in Terminal")), 6, 0, 1, 2);
+    rightLayout->addWidget(m_terminal, 6, 2, 1, 1);
+    rightLayout->addWidget(new QLabel(tr("Not Display in Launcher")), 7, 0, 1, 2);
+    rightLayout->addWidget(m_nodisplay, 7, 2, 1, 1);
 
-    QHBoxLayout *topLayout = new QHBoxLayout;
-    topLayout->addSpacing(30);
-    topLayout->setAlignment(Qt::AlignCenter);
-    topLayout->addLayout(leftLayout);
-    topLayout->addSpacing(30);
-    topLayout->addLayout(rightLayout);
-    topLayout->addSpacing(30);
-
-    QHBoxLayout *bottomLayout = new QHBoxLayout;
-    bottomLayout->setAlignment(Qt::AlignCenter);
-    bottomLayout->addWidget(m_confirm);
-    bottomLayout->addSpacing(80);
-    bottomLayout->addWidget(m_exit2);
-
-    QVBoxLayout *mainLayout = new QVBoxLayout;
+    QHBoxLayout *mainLayout = new QHBoxLayout;
+    mainLayout->addSpacing(30);
     mainLayout->setAlignment(Qt::AlignCenter);
-    mainLayout->addLayout(topLayout);
-    mainLayout->addSpacing(20);
-    mainLayout->addLayout(bottomLayout);
+    mainLayout->addLayout(leftLayout);
+    mainLayout->addSpacing(30);
+    mainLayout->addLayout(rightLayout);
+    mainLayout->addSpacing(30);
 
-    w->setLayout(mainLayout);
+    QVBoxLayout *layout = new QVBoxLayout;
+    layout->addSpacing(20);
+    layout->addLayout(mainLayout);
+    layout->addSpacing(40);
+
+    w->setLayout(layout);
 }
 
 void MainWindow::initDefaultValues()
@@ -268,9 +258,14 @@ void MainWindow::initConnections()
     connect(m_darktheme, &QAction::triggered, this, [ = ] () { setBackgroundColor("Dark", opacity, blur); });
     connect(m_systemtheme, &QAction::triggered, this, [ = ] () { setBackgroundColor("", opacity, blur); });
     connect(m_about, &QAction::triggered, this, [ = ] () { a->show(); });
-    connect(m_exit1, &QAction::triggered, this, [ = ] () { exitEditor(); });
-    connect(m_confirm, SIGNAL(clicked()), this, SLOT(createOrUpdateDesktopFile()));
-    connect(m_exit2, SIGNAL(clicked()), this, SLOT(exitEditor()));
+    connect(m_exit, &QAction::triggered, this, [ = ] () { exitEditor(); });
+
+    connect(open, &DPushButton::clicked, this, [=]()
+    {
+        QProcess *process = new QProcess;
+        process->start("dde-file-manager --show-item " + m_desktopFile);    //  非阻塞调用外部程序，不需要等待结束
+        message->hide();
+    });
 
     connect(DGuiApplicationHelper::instance(), &DGuiApplicationHelper::themeTypeChanged, this, [ = ] { setBackgroundColor(theme, opacity, blur); });
     connect(slider, SIGNAL(valueChanged(int)), this, SLOT(setOpacity(int)));
@@ -282,7 +277,7 @@ void MainWindow::loadDesktopFile()
     if(!m_desktopFile.isEmpty())
     {
         QFile file(m_desktopFile);
-        //  判断文件是否存在，以及文件是否可读取
+        /* 判断文件是否存在，以及文件是否可读取 */
         if(file.exists() && file.permissions().testFlag(QFile::ReadOwner))
         {
             fileName = QFileInfo(file).fileName();              //  获取文件名
@@ -297,7 +292,7 @@ void MainWindow::loadDesktopFile()
 
         isSaveAs = false;
 
-        //  读取文件信息
+        /* 读取文件信息 */
         m_nameEdit->setText(m_parser->value(KeyName).toString());
         m_commentEdit->setText(m_parser->value(KeyComment).toString());
         m_execEdit->setText(m_parser->value(KeyExec).toString());
@@ -366,8 +361,38 @@ void MainWindow::dropEvent(QDropEvent *event)
     QString dropFile = event->mimeData()->urls().at(0).toLocalFile();
     if(QFileInfo(dropFile).suffix() == "desktop")
     {
+        this->activateWindow();
         m_desktopFile = dropFile;
         loadDesktopFile();
+    }
+}
+
+void MainWindow::keyPressEvent(QKeyEvent *event)
+{
+    /* 捕捉快捷键键并执行相应操作 */
+    if (event->key() == Qt::Key_N && event->modifiers() == Qt::ControlModifier)
+    {
+        m_newFile->trigger();
+    }
+    if (event->key() == Qt::Key_O && event->modifiers() == Qt::ControlModifier)
+    {
+        m_openFile->trigger();
+    }
+    if (event->key() == Qt::Key_S && event->modifiers() == Qt::ControlModifier)
+    {
+        m_saveFile->trigger();
+    }
+    if (event->key() == Qt::Key_S && event->modifiers() == (Qt::ShiftModifier | Qt::ControlModifier))
+    {
+        m_saveAs->trigger();
+    }
+    if (event->key() == Qt::Key_F1)
+    {
+        m_about->trigger();
+    }
+    if (event->key() == Qt::Key_Q && event->modifiers() == Qt::ControlModifier)
+    {
+        m_exit->trigger();
     }
 }
 
@@ -404,7 +429,7 @@ void MainWindow::saveAsDesktopFile()
     QString saveFile = QFileDialog::getSaveFileName(this, tr("Save As"), QDir::homePath() + SAVEPATH, tr("Desktop Entry Files (*.desktop)"));
     if(!saveFile.isEmpty())
     {
-        //  判断上层目录是否可写入
+        /* 判断上层目录是否可写入 */
         if(QFileInfo(QFileInfo(saveFile).absolutePath()).permissions().testFlag(QFile::WriteUser))
         {
             m_desktopFile = saveFile;
@@ -505,7 +530,7 @@ void MainWindow::chooseIcon()
 
 void MainWindow::createOrUpdateDesktopFile()
 {
-    //  判断文件路径是否为空，原文件是否可写入，是否为另存为操作
+    /* 判断文件路径是否为空，原文件是否可写入，是否为另存为操作 */
     if(m_desktopFile.isEmpty() || (!QFile::permissions(m_desktopFile).testFlag(QFile::WriteOwner) && !isSaveAs))
     {
         saveAsDesktopFile();
@@ -542,16 +567,16 @@ void MainWindow::createOrUpdateDesktopFile()
 
     if(m_terminal->isChecked())
     {
-        m_parser->setValue(KeyTerminal, "True");
+        m_parser->setValue(KeyTerminal, "true");
     }
     else
     {
-        m_parser->setValue(KeyTerminal, "False");
+        m_parser->setValue(KeyTerminal, "false");
     }
 
     if(m_nodisplay->isChecked())
     {
-        m_parser->setValue(KeyNoDisplay, "True");
+        m_parser->setValue(KeyNoDisplay, "true");
     }
     else
     {
@@ -574,19 +599,10 @@ void MainWindow::createOrUpdateDesktopFile()
     fileName = QFileInfo(m_desktopFile).fileName();
     titlebar()->setTitle(fileName); //  标题栏显示当前文件名
 
-    DMessageBox::StandardButton result = DMessageBox::information(nullptr, tr("Tip"), tr("Desktop Entry saved!"), DMessageBox::Ok | DMessageBox::Open);
-    switch (result)
-    {
-        case DMessageBox::Ok:
-            return;
-        case DMessageBox::Open:
-            //  依赖文件管理器显示文件所在文件位置，方便使用其他编辑器修改文件
-            process = new QProcess;
-            process->start("dde-file-manager --show-item " + m_desktopFile);    //  非阻塞调用外部程序，不需要等待结束
-            break;
-        default:
-            return;
-    }
+    /* 提示信息 */
+    message->setMessage(QString("%1 %2 %3").arg(fileName).arg(tr("is saved.")).arg(tr("Show in file manager?")));
+    DMessageManager::instance()->sendMessage(this, message);
+    message->show();
 }
 
 void MainWindow::exitEditor()

@@ -6,7 +6,7 @@ About::About(DAboutDialog *parent) :
     setWindowIcon(QIcon::fromTheme(ICONNAME));          //  设置窗口图标
     setProductIcon(QIcon::fromTheme(ICONNAME));         //  设置产品图标
     setProductName(tr("Desktop Entry Editor"));         //  设置产品名称
-    setVersion(QString(tr("Version: %1")).arg("1.3"));  //  设置应用版本
+    setVersion(QString(tr("Version: %1")).arg("1.4"));  //  设置应用版本
 
     //  setCompanyLogo();                               //  设置公司图标
     //  setWebsiteName("");                             //  设置官网名称
