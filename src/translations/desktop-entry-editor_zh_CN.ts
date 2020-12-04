@@ -59,7 +59,7 @@
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="31"/>
-        <location filename="../mainwindow.cpp" line="429"/>
+        <location filename="../mainwindow.cpp" line="447"/>
         <source>Save As</source>
         <translation>另存为</translation>
     </message>
@@ -165,108 +165,108 @@
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="233"/>
-        <location filename="../mainwindow.cpp" line="305"/>
+        <location filename="../mainwindow.cpp" line="308"/>
         <source>- Please Select -</source>
         <translation>- 请选择 -</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="234"/>
-        <location filename="../mainwindow.cpp" line="311"/>
+        <location filename="../mainwindow.cpp" line="314"/>
         <source>Network</source>
         <translation>网络应用</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="235"/>
-        <location filename="../mainwindow.cpp" line="312"/>
+        <location filename="../mainwindow.cpp" line="315"/>
         <source>Chat</source>
         <translation>社交沟通</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="237"/>
-        <location filename="../mainwindow.cpp" line="314"/>
+        <location filename="../mainwindow.cpp" line="317"/>
         <source>Video</source>
         <translation>视频播放</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="523"/>
+        <location filename="../mainwindow.cpp" line="541"/>
         <source>Image Files (*.png *.jpg *.svg *.xpm)</source>
         <translation>图像文件 (*.png *.jpg *.svg *.xpm)</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="603"/>
+        <location filename="../mainwindow.cpp" line="621"/>
         <source>Show in file manager?</source>
         <translation>在文件管理器中显示？</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="603"/>
+        <location filename="../mainwindow.cpp" line="621"/>
         <source>is saved.</source>
         <translation>已保存。</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="236"/>
-        <location filename="../mainwindow.cpp" line="313"/>
+        <location filename="../mainwindow.cpp" line="316"/>
         <source>Music</source>
         <translation>音乐欣赏</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="238"/>
-        <location filename="../mainwindow.cpp" line="315"/>
+        <location filename="../mainwindow.cpp" line="318"/>
         <source>Graphics</source>
         <translation>图形图像</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="240"/>
-        <location filename="../mainwindow.cpp" line="317"/>
+        <location filename="../mainwindow.cpp" line="320"/>
         <source>Office</source>
         <translation>办公学习</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="242"/>
-        <location filename="../mainwindow.cpp" line="319"/>
+        <location filename="../mainwindow.cpp" line="322"/>
         <source>Development</source>
         <translation>编程开发</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="243"/>
-        <location filename="../mainwindow.cpp" line="320"/>
+        <location filename="../mainwindow.cpp" line="323"/>
         <source>System</source>
         <translation>系统管理</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="244"/>
-        <location filename="../mainwindow.cpp" line="321"/>
+        <location filename="../mainwindow.cpp" line="324"/>
         <source>Others</source>
         <translation>其他应用</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="239"/>
-        <location filename="../mainwindow.cpp" line="316"/>
+        <location filename="../mainwindow.cpp" line="319"/>
         <source>Game</source>
         <translation>游戏娱乐</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="241"/>
-        <location filename="../mainwindow.cpp" line="318"/>
+        <location filename="../mainwindow.cpp" line="321"/>
         <source>Translation</source>
         <translation>阅读翻译</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="419"/>
+        <location filename="../mainwindow.cpp" line="437"/>
         <source>Select file</source>
         <translation>选择文件</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="419"/>
+        <location filename="../mainwindow.cpp" line="437"/>
         <source>All Files (*)</source>
         <translation>所有文件 (*)</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="429"/>
+        <location filename="../mainwindow.cpp" line="447"/>
         <source>Desktop Entry Files (*.desktop)</source>
         <translation>快捷方式文件 (*.desktop)</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="523"/>
+        <location filename="../mainwindow.cpp" line="541"/>
         <source>Select icon</source>
         <translation>选择图标</translation>
     </message>

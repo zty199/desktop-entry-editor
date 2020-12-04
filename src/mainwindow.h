@@ -92,6 +92,7 @@ private:
     void closeEvent(QCloseEvent *event);
     void dropEvent(QDropEvent *event);
     void dragEnterEvent(QDragEnterEvent *event);
+    void mousePressEvent(QMouseEvent *event);
     void keyPressEvent(QKeyEvent *event);
     bool eventFilter(QObject *obj, QEvent *event);
 

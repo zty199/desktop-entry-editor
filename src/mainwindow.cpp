@@ -260,6 +260,9 @@ void MainWindow::initConnections()
     connect(m_about, &QAction::triggered, this, [ = ] () { a->show(); });
     connect(m_exit, &QAction::triggered, this, [ = ] () { exitEditor(); });
 
+    //  选择不同类别后恢复窗口焦点（若点击同一个分类，会出现焦点在分类下拉框上导致快捷键无响应的问题）
+    connect(m_categories, &DComboBox::currentTextChanged, this, [ = ] () { this->setFocus(); });
+
     connect(open, &DPushButton::clicked, this, [=]()
     {
         QProcess *process = new QProcess;
@@ -361,9 +364,18 @@ void MainWindow::dropEvent(QDropEvent *event)
     QString dropFile = event->mimeData()->urls().at(0).toLocalFile();
     if(QFileInfo(dropFile).suffix() == "desktop")
     {
-        this->activateWindow();
+        this->activateWindow(); //  拖入文件后窗口恢复焦点
         m_desktopFile = dropFile;
         loadDesktopFile();
+    }
+}
+
+void MainWindow::mousePressEvent(QMouseEvent *event)
+{
+    /* 点击主界面空白处获取焦点 */
+    if(event->button() == Qt::LeftButton)
+    {
+        this->setFocus();
     }
 }
 
@@ -393,6 +405,12 @@ void MainWindow::keyPressEvent(QKeyEvent *event)
     if (event->key() == Qt::Key_Q && event->modifiers() == Qt::ControlModifier)
     {
         m_exit->trigger();
+    }
+
+    /* 按回车键恢复窗口焦点 */
+    if(event->key() == Qt::Key_Return || Qt::Key_Enter)
+    {
+        this->setFocus();
     }
 }
 
