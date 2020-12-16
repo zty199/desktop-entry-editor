@@ -1,7 +1,6 @@
 #include "mainwindow.h"
 #include "config.h"
 
-#include <QProcess>
 #include <QMimeData>
 #include <QDragEnterEvent>
 #include <QDropEvent>
@@ -9,6 +8,7 @@
 #include <DWidgetUtil>  //  Dtk::Widget::moveToCenter(&w); 要调用它，就得引用 DWidgetUtil
 #include <DTitlebar>
 #include <DHorizontalLine>
+#include <DDesktopServices>
 
 static const QString KeyEncoding = "Encoding";
 static const QString KeyType = "Type";
@@ -23,30 +23,30 @@ static const QString KeyStartupWMClass = "StartupWMClass";
 static const QString KeyMimeType = "MimeType";
 
 MainWindow::MainWindow(DMainWindow *parent)
-    : DMainWindow(parent),
-      m_menu(new QMenu),
-      m_newFile(new QAction(tr("New"))),
-      m_openFile(new QAction(tr("Open"))),
-      m_saveFile(new QAction(tr("Save"))),
-      m_saveAs(new QAction(tr("Save As"))),
-      m_settings(new QAction(tr("Settings"))),
-      m_theme(new QMenu(tr("Theme"))),
-      m_lighttheme(new QAction(tr("Light theme"))),
-      m_darktheme(new QAction(tr("Dark theme"))),
-      m_systemtheme(new QAction(tr("System theme"))),
-      m_about(new QAction(tr("About"))),
-      m_exit(new QAction(tr("Exit"))),
-      m_nameEdit(new DLineEdit),
-      m_execEdit(new DFileChooserEdit),
-      m_commentEdit(new DLineEdit),
-      m_mimetypeEdit(new DLineEdit),
-      m_categories(new DComboBox),
-      m_terminal(new DSwitchButton),
-      m_nodisplay(new DSwitchButton),
-      m_icon(new DLabel),
-      m_iconTip(new DLabel),
-      open(new DPushButton(tr("Open"))),
-      message(new DFloatingMessage(DFloatingMessage::ResidentType))
+    : DMainWindow(parent)
+    , m_menu(new QMenu)
+    , m_newFile(new QAction(tr("New")))
+    , m_openFile(new QAction(tr("Open")))
+    , m_saveFile(new QAction(tr("Save")))
+    , m_saveAs(new QAction(tr("Save As")))
+    , m_settings(new QAction(tr("Settings")))
+    , m_theme(new QMenu(tr("Theme")))
+    , m_lighttheme(new QAction(tr("Light theme")))
+    , m_darktheme(new QAction(tr("Dark theme")))
+    , m_systemtheme(new QAction(tr("System theme")))
+    , m_about(new QAction(tr("About")))
+    , m_exit(new QAction(tr("Exit")))
+    , m_nameEdit(new DLineEdit)
+    , m_execEdit(new DFileChooserEdit)
+    , m_commentEdit(new DLineEdit)
+    , m_mimetypeEdit(new DLineEdit)
+    , m_categories(new DComboBox)
+    , m_terminal(new DSwitchButton)
+    , m_nodisplay(new DSwitchButton)
+    , m_icon(new DLabel)
+    , m_iconTip(new DLabel)
+    , open(new DPushButton(tr("Open")))
+    , message(new DFloatingMessage(DFloatingMessage::ResidentType))
 {
     checkWorkspace();       //  检查工作区
     initThemeMenu();        //  初始化主题子菜单
@@ -265,8 +265,7 @@ void MainWindow::initConnections()
 
     connect(open, &DPushButton::clicked, this, [=]()
     {
-        QProcess *process = new QProcess;
-        process->start("dde-file-manager --show-item " + m_desktopFile);    //  非阻塞调用外部程序，不需要等待结束
+        DDesktopServices::showFileItem(m_desktopFile);  //  在文管中标记文件位置
         message->hide();
     });
 
@@ -408,7 +407,7 @@ void MainWindow::keyPressEvent(QKeyEvent *event)
     }
 
     /* 按回车键恢复窗口焦点 */
-    if(event->key() == Qt::Key_Return || Qt::Key_Enter)
+    if(event->key() == Qt::Key_Return || event->key() == Qt::Key_Enter)
     {
         this->setFocus();
     }
