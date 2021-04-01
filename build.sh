@@ -47,8 +47,13 @@ echo -e "$TIP3\n"
 mkdir -p ./deb_uos/opt/apps/com.gitee.deepin-opensource.desktop-entry-editor/files/bin/
 mkdir -p ./deb_uos/opt/apps/com.gitee.deepin-opensource.desktop-entry-editor/files/share/desktop-entry-editor/translations/
 
+cp ./desktop-entry-editor.sh ./deb_uos/opt/apps/com.gitee.deepin-opensource.desktop-entry-editor/files/bin/
 cp ./build/desktop-entry-editor ./deb_uos/opt/apps/com.gitee.deepin-opensource.desktop-entry-editor/files/bin/
 cp ./src/translations/desktop-entry-editor_zh_CN.qm ./deb_uos/opt/apps/com.gitee.deepin-opensource.desktop-entry-editor/files/share/desktop-entry-editor/translations/
+
+bash copylib.sh ./deb_uos/opt/apps/com.gitee.deepin-opensource.desktop-entry-editor/files/bin/desktop-entry-editor
+
+cp -R ./lib ./deb_uos/opt/apps/com.gitee.deepin-opensource.desktop-entry-editor/files/lib
 
 find ./deb_uos/opt -type f -print0 | xargs -0 md5sum > ./deb_uos/DEBIAN/md5sums && sed -i "s#./deb_uos/opt#/opt#" ./deb_uos/DEBIAN/md5sums
 
@@ -69,6 +74,7 @@ echo -e "$TIP6\n"
 
 rm -rf ./deb_uos/DEBIAN/md5sums
 rm -rf ./deb_uos/opt/apps/com.gitee.deepin-opensource.desktop-entry-editor/files/*
+rm -rf ./lib
 
 # rm -rf ./build
 
