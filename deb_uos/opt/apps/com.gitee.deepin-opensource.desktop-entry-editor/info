@@ -1,7 +1,7 @@
 {
     "appid": "com.gitee.deepin-opensource.desktop-entry-editor",
     "name": "Desktop Entry Editor",
-    "version": "1.4.3",
+    "version": "1.4.4",
     "arch": ["amd64"],
     "permissions": {
         "autostart": false,

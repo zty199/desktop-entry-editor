@@ -280,7 +280,14 @@ void MainWindow::loadDesktopFile()
     {
         QFile file(m_desktopFile);
         /* 判断文件是否存在，以及文件是否可读取 */
-        if(file.exists() && file.permissions().testFlag(QFile::ReadOwner))
+
+        /*
+         * 以防万一，判断文件可读方法一起改了吧......
+         * 原始：file.permissions().testFlag(QFile::ReadOwner)
+         *
+         * 2021.04.10 02:15
+         */
+        if(file.exists() && QFileInfo(file).isReadable())
         {
             fileName = QFileInfo(file).fileName();              //  获取文件名
             titlebar()->setTitle(fileName);                     //  显示当前文件名
@@ -447,14 +454,38 @@ void MainWindow::saveAsDesktopFile()
     if(!saveFile.isEmpty())
     {
         /* 判断上层目录是否可写入 */
-        if(QFileInfo(QFileInfo(saveFile).absolutePath()).permissions().testFlag(QFile::WriteUser))
+
+        /*
+         * 对于文件夹的写入权限判断好像也没问题啊......
+         * 原始：QFileInfo(QFileInfo(saveFile).absolutePath()).permissions().testFlag(QFile::WriteUser)
+         *
+         * 2021.04.10 02:24
+         */
+        if(QFileInfo(QFileInfo(saveFile).absolutePath()).isWritable())
         {
             m_desktopFile = saveFile;
             if(!saveFile.endsWith(".desktop"))
             {
                 m_desktopFile += ".desktop";
-                isSaveAs = true;    //  另存为文件时文件不存在，所以无法写入，需要判断
             }
+            /*
+             * 不知道 20.2 还是更早之前开始，
+             * 文件保存对话框写入文件名好像会自动加上后缀名了？
+             *
+             * 导致这里对于是否另存为操作的判断要放到外面才生效，
+             * 否则会一直判断为文件无写入权限而重复显示对话框。
+             *
+             * 果然是我之前写的一直有 BUG 现在才注意到？
+             * 但是没理由啊，测试了这么多版本了都......
+             * 所以还是因为文管改了什么东西？
+             *
+             * 还好今天重装系统用了一次自己写的玩意儿，
+             * 不然死都发现不了这问题了......
+             *
+             * 2020.04.10 01:50
+             */
+            isSaveAs = true;    //  另存为文件时文件不存在，所以无法写入，需要判断
+
             createOrUpdateDesktopFile();
         }
         else
@@ -548,7 +579,23 @@ void MainWindow::chooseIcon()
 void MainWindow::createOrUpdateDesktopFile()
 {
     /* 判断文件路径是否为空，原文件是否可写入，是否为另存为操作 */
-    if(m_desktopFile.isEmpty() || (!QFile::permissions(m_desktopFile).testFlag(QFile::WriteOwner) && !isSaveAs))
+
+    /*
+     * 此处原始判断文件是否可写入方法为：
+     * QFile::permissions(m_desktopFile).testFlag(QFile::WriteOwner)
+     * 似乎不正确了，比如读取 /usr/share/applications 里面的 .desktop 文件，
+     * 会显示有写入权限，然而实际并没有......
+     *
+     * 换用以下方式判断结果正常：
+     * QFileInfo(m_desktopFile).isWritable()
+     * 如果是我写的 BUG，那之前为啥没测试出来呢？
+     *
+     * 真要猜的话，个人感觉，
+     * 有点像是......Qt 5.11.3 到 5.15.1 的　API 有变化导致的？
+     *
+     * 2021.04.10 02:08
+     */
+    if(m_desktopFile.isEmpty() || (!QFileInfo(m_desktopFile).isWritable() && !isSaveAs))
     {
         saveAsDesktopFile();
         return;

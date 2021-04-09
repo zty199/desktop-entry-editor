@@ -26,6 +26,8 @@ libdtkwidget-dev (>= 5.2.2.16-1)
 
 dde-file-manager
 
+fakeroot
+
 ## Build
 
 Run build.sh to automatically build project and get deb in current dir.

@@ -26,6 +26,8 @@ libdtkwidget-dev (>= 5.2.2.16-1)
 
 dde-file-manager
 
+fakeroot
+
 ## 构建方式
 
 运行 build.sh 脚本，自动编译构建项目并打包 deb 至当前文件夹。
