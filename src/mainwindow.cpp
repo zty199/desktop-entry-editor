@@ -24,6 +24,9 @@ static const QString KeyMimeType = "MimeType";
 
 MainWindow::MainWindow(DMainWindow *parent)
     : DMainWindow(parent)
+    , w(new QWidget)
+    , s(new Settings(this))
+    , a(new About)
     , m_menu(new QMenu)
     , m_newFile(new QAction(tr("New")))
     , m_openFile(new QAction(tr("Open")))
@@ -58,9 +61,9 @@ MainWindow::MainWindow(DMainWindow *parent)
 
 MainWindow::~MainWindow()
 {
-    delete w;
     delete s;
     delete a;
+    delete w;
 }
 
 void MainWindow::setDesktopFile(QString file)
@@ -108,10 +111,12 @@ void MainWindow::initSettings()
         {
             opacity = 200;
         }
-        s->getSlider()->setValue(opacity);
+        // s->getSlider()->setValue(opacity);
+        emit opacityChanged(opacity);
 
         blur = Config().getSettings("settings", "blur").toBool();
-        s->getSwitchButton()->setChecked(blur);
+        // s->getSwitchButton()->setChecked(blur);
+        emit blurChanged(blur);
 
         theme = Config().getSettings("settings", "theme").toString();
 
@@ -243,25 +248,27 @@ void MainWindow::initDefaultValues()
     Categories.insert(tr("System"), "System");
     Categories.insert(tr("Others"), "Others");
     foreach(const QString &str, Categories.keys())
+    {
         m_categories->addItem(str, Categories.value(str));
+    }
     m_categories->setCurrentIndex(0);
 }
 
 void MainWindow::initConnections()
 {
-    connect(m_newFile, &QAction::triggered, this, [ = ] () { newDesktopFile(); });
-    connect(m_openFile, &QAction::triggered, this, [ = ] () { openDesktopFile(); });
-    connect(m_saveFile, &QAction::triggered, this, [ = ] () { createOrUpdateDesktopFile(); });
-    connect(m_saveAs, &QAction::triggered, this, [ = ] () { saveAsDesktopFile(); });
-    connect(m_settings, &QAction::triggered, this, [ = ] () { s->show(); });
-    connect(m_lighttheme, &QAction::triggered, this, [ = ] () { setBackgroundColor("Light", opacity, blur); });
-    connect(m_darktheme, &QAction::triggered, this, [ = ] () { setBackgroundColor("Dark", opacity, blur); });
-    connect(m_systemtheme, &QAction::triggered, this, [ = ] () { setBackgroundColor("", opacity, blur); });
-    connect(m_about, &QAction::triggered, this, [ = ] () { a->show(); });
-    connect(m_exit, &QAction::triggered, this, [ = ] () { exitEditor(); });
+    connect(m_newFile, &QAction::triggered, this, [=]{newDesktopFile();});
+    connect(m_openFile, &QAction::triggered, this, [=]{openDesktopFile();});
+    connect(m_saveFile, &QAction::triggered, this, [=]{createOrUpdateDesktopFile();});
+    connect(m_saveAs, &QAction::triggered, this, [=]{saveAsDesktopFile();});
+    connect(m_settings, &QAction::triggered, this, [=]{s->show();});
+    connect(m_lighttheme, &QAction::triggered, this, [=]{setBackgroundColor("Light", opacity, blur);});
+    connect(m_darktheme, &QAction::triggered, this, [=]{setBackgroundColor("Dark", opacity, blur);});
+    connect(m_systemtheme, &QAction::triggered, this, [=]{setBackgroundColor("", opacity, blur);});
+    connect(m_about, &QAction::triggered, this, [=]{a->show();});
+    connect(m_exit, &QAction::triggered, this, [=]{exitEditor();});
 
     //  选择不同类别后恢复窗口焦点（若点击同一个分类，会出现焦点在分类下拉框上导致快捷键无响应的问题）
-    connect(m_categories, &DComboBox::currentTextChanged, this, [ = ] () { this->setFocus(); });
+    connect(m_categories, &DComboBox::currentTextChanged, this, [=]{this->setFocus();});
 
     connect(open, &DPushButton::clicked, this, [=]()
     {
@@ -269,9 +276,9 @@ void MainWindow::initConnections()
         message->hide();
     });
 
-    connect(DGuiApplicationHelper::instance(), &DGuiApplicationHelper::themeTypeChanged, this, [ = ] { setBackgroundColor(theme, opacity, blur); });
-    connect(slider, SIGNAL(valueChanged(int)), this, SLOT(setOpacity(int)));
-    connect(switchbutton, SIGNAL(toggled(bool)), this, SLOT(setBlur(bool)));
+    connect(DGuiApplicationHelper::instance(), &DGuiApplicationHelper::themeTypeChanged, this, [=]{setBackgroundColor(theme, opacity, blur);});
+    connect(s, &Settings::opacityChanged, this, &MainWindow::setOpacity);
+    connect(s, &Settings::blurChanged, this, &MainWindow::setBlur);
 }
 
 void MainWindow::loadDesktopFile()
@@ -564,6 +571,8 @@ void MainWindow::setBackgroundColor(QString str, int value, bool flag)
     //  titlebar()->setPalette(palette);
 
     setEnableBlurWindow(blur);
+
+    update();
 }
 
 void MainWindow::chooseIcon()

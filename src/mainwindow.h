@@ -34,13 +34,13 @@ public:
 
 private:
     //  w 是窗口的用户区，应当是所有窗口中控件的父（不包含标题栏及其上边的控件）
-    QWidget *w = new QWidget;
+    QWidget *w;
 
     //  s 是设置窗口
-    Settings *s = new Settings;
+    Settings *s;
 
     //  a 是关于窗口
-    About *a = new About;
+    About *a;
 
     QMenu *m_menu;
     QAction *m_newFile;
@@ -70,8 +70,6 @@ private:
     DPushButton *open;
     DFloatingMessage *message;
 
-    QSlider* slider = s->getSlider();
-    DSwitchButton* switchbutton = s->getSwitchButton();
     int opacity = 200;
     bool blur = false;
     QString theme;
@@ -106,6 +104,10 @@ private slots:
     void chooseIcon();
     void createOrUpdateDesktopFile();
     void exitEditor();
+
+signals:
+    void opacityChanged(int);
+    void blurChanged(bool);
 
 };
 

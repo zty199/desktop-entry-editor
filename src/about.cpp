@@ -1,7 +1,6 @@
 #include "about.h"
 
-About::About(DAboutDialog *parent) :
-    DAboutDialog(parent)
+About::About(DAboutDialog *parent) : DAboutDialog(parent)
 {
     setWindowIcon(QIcon::fromTheme(ICONNAME));          //  设置窗口图标
     setProductIcon(QIcon::fromTheme(ICONNAME));         //  设置产品图标
@@ -31,4 +30,5 @@ About::About(DAboutDialog *parent) :
 
 About::~About()
 {
+
 }

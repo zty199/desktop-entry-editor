@@ -1,17 +1,23 @@
 #include "settings.h"
 #include "ui_settings.h"
 
-Settings::Settings(DBlurEffectWidget *parent) :
-    DBlurEffectWidget(parent),
-    ui(new Ui::Settings)
+#include <DWidgetUtil>
+
+Settings::Settings(DMainWindow *m, DBlurEffectWidget *parent)
+    : DBlurEffectWidget(parent)
+    , ui(new Ui::Settings)
+    , m(m)
 {
     ui->setupUi(this);
 
     initUI();
 
-    connect(ui->slider, SIGNAL(valueChanged(int)), this, SLOT(setOpacity(int)));
-    connect(DGuiApplicationHelper::instance(), &DGuiApplicationHelper::themeTypeChanged, this, [ = ] { setBackgroundColor(); });
-    connect(DGuiApplicationHelper::instance(), &DGuiApplicationHelper::themeTypeChanged, this, [ = ] { setOpacity(ui->slider->value()); });
+    connect(ui->slider, &QSlider::valueChanged, this, &Settings::setOpacity);
+    connect(ui->switchbutton, &DSwitchButton::toggled, this, &Settings::setBlur);
+    connect(m, SIGNAL(opacityChanged(int)), this, SLOT(on_opacityChanged(int)));
+    connect(m, SIGNAL(blurChanged(bool)), this, SLOT(on_blurChanged(bool)));
+    connect(DGuiApplicationHelper::instance(), &DGuiApplicationHelper::themeTypeChanged, this, [=]{setBackgroundColor();});
+    connect(DGuiApplicationHelper::instance(), &DGuiApplicationHelper::themeTypeChanged, this, [=]{emit ui->slider->valueChanged(ui->slider->value());});
 }
 
 Settings::~Settings()
@@ -19,22 +25,11 @@ Settings::~Settings()
     delete ui;
 }
 
-QSlider* Settings::getSlider()
-{
-    return ui->slider;
-}
-
-DSwitchButton* Settings::getSwitchButton()
-{
-    return ui->switchbutton;
-}
-
 void Settings::initUI()
 {
     setFixedSize(400, 300);
     setWindowFlags(windowFlags()&~Qt::WindowMinMaxButtonsHint);
-
-    setMaskAlpha(200);
+    moveToCenter(this);
 
     ui->titlebar->setBackgroundTransparent(true);
     ui->titlebar->setMenuDisabled(true);
@@ -56,4 +51,24 @@ void Settings::setBackgroundColor()
 void Settings::setOpacity(int value)
 {
     ui->label->setText(QString::number(value / 255.0, 'f', 2));
+
+    setMaskAlpha(static_cast<quint8>(value));
+    emit opacityChanged(value);
+}
+
+void Settings::setBlur(bool checked)
+{
+    Q_UNUSED(checked)
+
+    emit blurChanged(ui->switchbutton->isChecked());
+}
+
+void Settings::on_opacityChanged(int value)
+{
+    ui->slider->setValue(value);
+}
+
+void Settings::on_blurChanged(bool flag)
+{
+    ui->switchbutton->setChecked(flag);
 }

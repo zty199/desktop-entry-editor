@@ -1,10 +1,8 @@
 #ifndef SETTINGS_H
 #define SETTINGS_H
 
-#include <QSlider>
-
 #include <DBlurEffectWidget>
-#include <DSwitchButton>
+#include <DMainWindow>
 
 DWIDGET_USE_NAMESPACE
 
@@ -17,20 +15,25 @@ class Settings : public DBlurEffectWidget
     Q_OBJECT
 
 public:
-    explicit Settings(DBlurEffectWidget *parent = nullptr);
+    explicit Settings(DMainWindow *m, DBlurEffectWidget *parent = nullptr);
     ~Settings();
-
-    QSlider* getSlider();
-    DSwitchButton* getSwitchButton();
 
 private:
     Ui::Settings *ui;
+    DMainWindow *m;
 
     void initUI();
 
 private slots:
     void setBackgroundColor();
     void setOpacity(int value);
+    void setBlur(bool checked);
+    void on_opacityChanged(int value);
+    void on_blurChanged(bool flag);
+
+signals:
+    void opacityChanged(int);
+    void blurChanged(bool);
 
 };
 
