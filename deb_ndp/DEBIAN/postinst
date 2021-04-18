@@ -1,5 +1,7 @@
 #!/bin/sh
 
+mkdir -p /usr/local/bin
+
 ln -s -f /opt/apps/com.gitee.deepin-opensource.desktop-entry-editor/files/bin/desktop-entry-editor /usr/local/bin/desktop-entry-editor
 
 ln -s -f ../../opt/apps/com.gitee.deepin-opensource.desktop-entry-editor/files/share/desktop-entry-editor /usr/share/

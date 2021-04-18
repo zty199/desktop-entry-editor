@@ -1,0 +1,17 @@
+{
+    "appid": "com.gitee.deepin-opensource.desktop-entry-editor",
+    "name": "Desktop Entry Editor",
+    "version": "1.4.5",
+    "arch": ["amd64"],
+    "permissions": {
+        "autostart": false,
+        "notification": false,
+        "trayicon": false,
+        "clipboard": true,
+        "account": false,
+        "bluetooth": false,
+        "camera": false,
+        "audio_record": false,
+        "installed_apps": false
+    }
+}

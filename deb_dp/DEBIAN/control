@@ -1,0 +1,12 @@
+Package: com.gitee.deepin-opensource.desktop-entry-editor
+Version: 1.4.5~uos
+Maintainer: zty199 <zty2864@gmail.com>
+Section: editors
+Source: https://github.com/linuxdeepin/desktop-entry-editor
+Homepage: https://gitee.com/deepin-opensource/desktop-entry-editor
+Architecture: amd64
+Priority: optional
+Replaces: desktop-entry-editor (<= 1.1)
+Conflicts: desktop-entry-editor (<= 1.1)
+Description: A simple GUI tool to create and edit desktop files, desinged for Deepin.
+

@@ -1,6 +1,7 @@
 #!/bin/bash
 
-cd $PWD
+realpath=`realpath $0`
+cd `dirname $realpath`
 
 # 获取系统语言环境 | Get system locale
 LANG=$(locale | grep LANGUAGE | cut -d '=' -f 2 | cut -d '_' -f 1)
@@ -44,36 +45,35 @@ echo -e "\n$TIP2\n"
 # 打包 | Build deb
 echo -e "$TIP3\n"
 
-mkdir -p ./deb_uos/opt/apps/com.gitee.deepin-opensource.desktop-entry-editor/files/bin/
-mkdir -p ./deb_uos/opt/apps/com.gitee.deepin-opensource.desktop-entry-editor/files/share/desktop-entry-editor/translations/
+mkdir -p ./deb_ndp/opt/apps/com.gitee.deepin-opensource.desktop-entry-editor/files/bin/
+mkdir -p ./deb_ndp/opt/apps/com.gitee.deepin-opensource.desktop-entry-editor/files/share/desktop-entry-editor/translations/
 
-cp ./desktop-entry-editor.sh ./deb_uos/opt/apps/com.gitee.deepin-opensource.desktop-entry-editor/files/bin/
-cp ./build/desktop-entry-editor ./deb_uos/opt/apps/com.gitee.deepin-opensource.desktop-entry-editor/files/bin/
-cp ./src/translations/desktop-entry-editor_zh_CN.qm ./deb_uos/opt/apps/com.gitee.deepin-opensource.desktop-entry-editor/files/share/desktop-entry-editor/translations/
+# cp ./desktop-entry-editor.sh ./deb_ndp/opt/apps/com.gitee.deepin-opensource.desktop-entry-editor/files/bin/
+cp ./build/desktop-entry-editor ./deb_ndp/opt/apps/com.gitee.deepin-opensource.desktop-entry-editor/files/bin/
+cp ./src/translations/desktop-entry-editor_zh_CN.qm ./deb_ndp/opt/apps/com.gitee.deepin-opensource.desktop-entry-editor/files/share/desktop-entry-editor/translations/
 
-bash copylib.sh ./deb_uos/opt/apps/com.gitee.deepin-opensource.desktop-entry-editor/files/bin/desktop-entry-editor
+# bash copylib.sh ./deb_ndp/opt/apps/com.gitee.deepin-opensource.desktop-entry-editor/files/bin/desktop-entry-editor
+# cp -R ./lib ./deb_ndp/opt/apps/com.gitee.deepin-opensource.desktop-entry-editor/files/lib
 
-cp -R ./lib ./deb_uos/opt/apps/com.gitee.deepin-opensource.desktop-entry-editor/files/lib
-
-find ./deb_uos/opt -type f -print0 | xargs -0 md5sum > ./deb_uos/DEBIAN/md5sums && sed -i "s#./deb_uos/opt#/opt#" ./deb_uos/DEBIAN/md5sums
+find ./deb_ndp/opt -type f -print0 | xargs -0 md5sum > ./deb_ndp/DEBIAN/md5sums && sed -i "s#./deb_ndp/opt#/opt#" ./deb_ndp/DEBIAN/md5sums
 
 echo -e "$TIP4\n"
 
-cat ./deb_uos/DEBIAN/control
+cat ./deb_ndp/DEBIAN/control
 
 echo -e "-------------------------\n"
 
-version=$(cat ./deb_uos/DEBIAN/control | grep "Version" | awk -F ' '  '{print $2}')
+version=$(cat ./deb_ndp/DEBIAN/control | grep "Version" | awk -F ' '  '{print $2}')
 
-fakeroot dpkg -b ./deb_uos ./com.gitee.deepin-opensource.desktop-entry-editor_"$version"_amd64.deb
+fakeroot dpkg -b ./deb_ndp ./com.gitee.deepin-opensource.desktop-entry-editor_"$version"_amd64.deb
 
 echo -e "\n$TIP5\n"
 
 # 清除模板中的文件 | Delete temp files
 echo -e "$TIP6\n"
 
-rm -rf ./deb_uos/DEBIAN/md5sums
-rm -rf ./deb_uos/opt/apps/com.gitee.deepin-opensource.desktop-entry-editor/files/*
+rm -rf ./deb_ndp/DEBIAN/md5sums
+rm -rf ./deb_ndp/opt/apps/com.gitee.deepin-opensource.desktop-entry-editor/files/*
 rm -rf ./lib
 
 # rm -rf ./build

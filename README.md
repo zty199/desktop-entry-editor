@@ -10,12 +10,6 @@ qt5-default
 
 qtcreator (Recommended)
 
-libqt5core5a
-
-libqt5gui5
-
-libqt5widgets5
-
 libqt5xdg-dev
 
 libdtkcore-dev (>= 5.2.2.15-1)
