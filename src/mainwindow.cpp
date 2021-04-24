@@ -132,6 +132,7 @@ void MainWindow::initUI()
 
     setWindowIcon(QIcon::fromTheme(ICONNAME));          //  设置窗口图标
     setAttribute(Qt::WA_TranslucentBackground, true);   //  设置窗口透明
+    setWindowFlag(Qt::WindowMaximizeButtonHint, false); //  禁用最大化按钮
     titlebar()->setIcon(QIcon::fromTheme(ICONNAME));    //  设置标题栏图标
     //  titlebar()->setBackgroundTransparent(true);         //  设置标题栏透明
     //  setTitlebarShadowEnabled(false);                    //  关闭标题栏阴影
