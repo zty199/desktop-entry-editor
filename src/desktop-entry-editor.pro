@@ -46,7 +46,8 @@ FORMS += \
       settings.ui
 
 TRANSLATIONS += \
-             translations/desktop-entry-editor_zh_CN.ts
+             translations/desktop-entry-editor_zh_CN.ts \
+             translations/desktop-entry-editor_es_ES.ts
 
 # Automating generation .qm files from .ts files
 !system($$PWD/translations/translate_generation.sh): error("Failed to generate translation")
