@@ -1,0 +1,5 @@
+#!/bin/bash
+
+if [ "$1" == "configure" ] ; then
+    update-desktop-database /usr/share/applications || true
+fi

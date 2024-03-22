@@ -1,0 +1,5 @@
+desktop-entry-editor (1.4.6) stable; urgency=medium
+
+  * Support debian package build
+
+ -- zty199 <zty2864@gmail.com>  Fri, 23 Mar 2024 00:12:00 +0800

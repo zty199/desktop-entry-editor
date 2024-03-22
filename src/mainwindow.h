@@ -1,9 +1,6 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
-#include <QWidget>
-#include <QSlider>
-
 #include <DMainWindow>
 #include <DLabel>
 #include <DLineEdit>
@@ -15,100 +12,65 @@
 
 #include <XdgDesktopFile>
 
-#include "settings.h"
-#include "about.h"
-
-#define SAVEPATH "/.local/share/applications/desktop-entry-editor/"
-
-DWIDGET_USE_NAMESPACE
-
-class MainWindow : public DMainWindow
+class MainWindow : public Dtk::Widget::DMainWindow
 {
     Q_OBJECT
 
 public:
-    MainWindow(DMainWindow *parent = nullptr);
-    ~MainWindow();
+    explicit MainWindow(DMainWindow *parent = nullptr);
+    ~MainWindow() override;
+    bool eventFilter(QObject *watched, QEvent *event) override;
 
-    void setDesktopFile(QString file);
+    void setDesktopFile(const QString &file);
+
+protected:
+    void mousePressEvent(QMouseEvent *event) override;
+    void keyPressEvent(QKeyEvent *event) override;
+    void paintEvent(QPaintEvent *event) override;
+    void dragEnterEvent(QDragEnterEvent *event) override;
+    void dropEvent(QDropEvent *event) override;
+    void changeEvent(QEvent *event) override;
 
 private:
-    //  w 是窗口的用户区，应当是所有窗口中控件的父（不包含标题栏及其上边的控件）
-    QWidget *w;
+    void initUI();
+    void initTitlebar();
+    void initDefaultValues();
+    void initConnections();
 
-    //  s 是设置窗口
-    Settings *s;
+    void checkWorkspace();
+    void loadDesktopFile();
 
-    //  a 是关于窗口
-    About *a;
+private slots:
+    void slotIconThemeNameChanged(const QByteArray &iconThemeName);
 
-    QMenu *m_menu;
-    QAction *m_newFile;
-    QAction *m_openFile;
-    QAction *m_saveFile;
-    QAction *m_saveAs;
-    QAction *m_settings;
-    QMenu *m_theme;
-    QAction *m_lighttheme;
-    QAction *m_darktheme;
-    QAction *m_systemtheme;
-    QAction *m_about;
-    QAction *m_exit;
+    void newDesktopFile();
+    void openDesktopFile();
+    void saveAsDesktopFile();
 
-    DLineEdit *m_nameEdit;
-    DLineEdit *m_execEdit;
-    DLineEdit *m_commentEdit;
-    DLineEdit *m_mimetypeEdit;
-    DComboBox *m_categories;
-    DSwitchButton *m_terminal;
-    DSwitchButton *m_nodisplay;
-    DLabel *m_icon;
-    DLabel *m_iconTip;
+    void chooseIcon();
+    void createOrUpdateDesktopFile();
 
-    XdgDesktopFile *m_parser;
+private:
+    Dtk::Widget::DLabel *m_icon = nullptr;
+    Dtk::Widget::DLabel *m_iconTip = nullptr;
 
-    DPushButton *open;
-    DFloatingMessage *message;
+    Dtk::Widget::DLineEdit *m_nameEdit = nullptr;
+    Dtk::Widget::DLineEdit *m_execEdit = nullptr;
+    Dtk::Widget::DLineEdit *m_commentEdit = nullptr;
+    Dtk::Widget::DLineEdit *m_mimetypeEdit = nullptr;
+    Dtk::Widget::DComboBox *m_categories = nullptr;
+    Dtk::Widget::DSwitchButton *m_terminal = nullptr;
+    Dtk::Widget::DSwitchButton *m_nodisplay = nullptr;
 
-    int opacity = 200;
-    bool blur = false;
-    QString theme;
+    Dtk::Widget::DFloatingMessage *message = nullptr;
+    Dtk::Widget::DPushButton *open = nullptr;
+
+    XdgDesktopFile *m_parser = nullptr;
 
     QString m_iconFile;
     QString m_desktopFile;
     QString fileName;
-    bool isSaveAs;
-
-    void initThemeMenu();
-    void initSettings();
-    void initUI();
-    void initDefaultValues();
-    void initConnections();
-    void checkWorkspace();
-    void loadDesktopFile();
-
-    void closeEvent(QCloseEvent *event);
-    void dropEvent(QDropEvent *event);
-    void dragEnterEvent(QDragEnterEvent *event);
-    void mousePressEvent(QMouseEvent *event);
-    void keyPressEvent(QKeyEvent *event);
-    bool eventFilter(QObject *obj, QEvent *event);
-
-private slots:
-    void newDesktopFile();
-    void openDesktopFile();
-    void saveAsDesktopFile();
-    void setOpacity(int value);
-    void setBlur(bool flag);
-    void setBackgroundColor(QString theme, int value, bool flag);
-    void chooseIcon();
-    void createOrUpdateDesktopFile();
-    void exitEditor();
-
-signals:
-    void opacityChanged(int);
-    void blurChanged(bool);
-
+    bool isSaveAs = false;
 };
 
 #endif // MAINWINDOW_H

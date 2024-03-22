@@ -1,24 +1,30 @@
 #ifndef CONFIG_H
 #define CONFIG_H
 
-#include <QDir>
 #include <QSettings>
-
-#define CONFIGPATH "/.config/desktop-entry-editor/"
 
 class Config
 {
 public:
-    Config();
-    ~Config();
+    static Config *instance();
 
-    QVariant getSettings(QString section, QString key);
-    void setSettings(QString section, QString key, QVariant value);
+    QVariant getValue(const QString &section, const QString &key);
+    void setValue(const QString &section, const QString &key, const QVariant &value);
 
 private:
-    QString m_fileName = QDir::homePath() + CONFIGPATH + "config.ini";
-    QSettings *m_settings;
+    Config();
+    Config(Config &) = delete;
+    Config &operator=(const Config &) = delete;
+    ~Config();
 
+    void init();
+
+private:
+    static Config *m_instance;
+
+    QSettings *m_settings = nullptr;
+
+    QString m_fileName;
 };
 
 #endif // CONFIG_H

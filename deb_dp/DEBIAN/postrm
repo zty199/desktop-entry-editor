@@ -1,9 +1,0 @@
-#!/bin/sh
-
-rm /usr/local/bin/desktop-entry-editor
-
-rm -rf /usr/share/desktop-entry-editor
-
-update-icon-caches /usr/share/icons/hicolor || true
-update-desktop-database /usr/share/applications || true
-update-mime-database /usr/share/mime || true

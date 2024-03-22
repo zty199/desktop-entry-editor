@@ -1,4 +1,4 @@
-# 桌面快捷方式编辑器 (forked from linuxdeepin/desktop-entry-editor)
+# 桌面快捷方式编辑器 (forked from [linuxdeepin/desktop-entry-editor](https://github.com/linuxdeepin/desktop-entry-editor))
 
 中文 | [英文](https://github.com/zty199/desktop-entry-editor)
 
@@ -6,25 +6,33 @@
 
 ## 依赖
 
-qt5-default
+- qtbase5-dev
 
-qtcreator (推荐使用 Qt Creator 打开项目进行构建)
+- qttools5-dev-tools
 
-libqt5xdg-dev
+- libdtkcore-dev (>= 5.0)
 
-libdtkcore-dev (>= 5.2.2.15-1)
+- libdtkgui-dev (>= 5.0)
 
-libdtkgui-dev (>= 5.2.2.18-1)
+- libdtkwidget-dev (>= 5.0)
 
-libdtkwidget-dev (>= 5.2.2.16-1)
+- libqt5xdg-dev
 
-dde-file-manager
-
-fakeroot
+- fakeroot
 
 ## 构建方式
 
-运行 build.sh 脚本，自动编译构建项目并打包 deb 至当前文件夹。
+```bash
+mkdir -p build
+qmake desktop-entry-editor.pro -spec linux-g++ CONFIG+=qtquickcompiler -o build
+make -C build -j$(nproc)
+```
+
+或
+
+```bash
+dpkg-buildpackage -Zxz -rfakeroot -b -uc -us -j$(nproc)
+```
 
 ## 感谢
 

@@ -22,37 +22,46 @@ DEFINES += QT_DEPRECATED_WARNINGS
 # You can also select to disable deprecated APIs only up to a certain version of Qt.
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
-# 禁止输出 qWarning / qDebug 信息
-CONFIG(release, debug|release): DEFINES += QT_NO_WARNING_OUTPUT QT_NO_DEBUG_OUTPUT
+# Get build version from qmake
+VERSION = $$BUILD_VERSION
+isEmpty(VERSION): VERSION = 1.0
+DEFINES += APP_VERSION=\\\"'$${VERSION}'\\\"
+
+# Disable qWarning / qDebug output in Release
+#CONFIG(release, debug | release): DEFINES += QT_NO_WARNING_OUTPUT QT_NO_DEBUG_OUTPUT
 
 CONFIG += c++11 link_pkgconfig
-
 PKGCONFIG += dtkwidget Qt5Xdg
 
 SOURCES += \
-        main.cpp \
-        mainwindow.cpp \
-        config.cpp \
-        settings.cpp \
-        about.cpp
+    main.cpp \
+    application.cpp \
+    mainwindow.cpp \
+    utils.cpp
 
 HEADERS += \
-        mainwindow.h \
-        config.h \
-        settings.h \
-        about.h
-
-FORMS += \
-      settings.ui
+    application.h \
+    mainwindow.h \
+    utils.h \
+    consts.h
 
 TRANSLATIONS += \
-             translations/desktop-entry-editor_zh_CN.ts \
-             translations/desktop-entry-editor_es_ES.ts
+    $${PWD}/../translations/$${TARGET}_es_ES.ts \
+    $${PWD}/../translations/$${TARGET}_zh_CN.ts
 
-# Automating generation .qm files from .ts files
-!system($$PWD/translations/translate_generation.sh): error("Failed to generate translation")
 
-# Default rules for deployment.
-qnx: target.path = /tmp/$${TARGET}/bin
-else: unix:!android: target.path = /opt/$${TARGET}/bin
+# Update translation files
+CONFIG(release, debug | release) {
+    !system(bash $${PWD}/../translate_update.sh $${TARGET}): error("Failed to lupdate")
+    !system(bash $${PWD}/../translate_generation.sh $${TARGET}): error("Failed to lrelease")
+}
+
+# Rules for deployment
+linux {
+isEmpty(PREFIX) {
+    PREFIX = /usr
+}
+
+target.path = $${PREFIX}/bin
 !isEmpty(target.path): INSTALLS += target
+}

@@ -1,4 +1,4 @@
-# desktop-entry-editor (forked from linuxdeepin/desktop-entry-editor)
+# desktop-entry-editor (forked from [linuxdeepin/desktop-entry-editor](https://github.com/linuxdeepin/desktop-entry-editor))
 
 [Chinese](https://gitee.com/deepin-opensource/desktop-entry-editor) | English
 
@@ -6,25 +6,33 @@ A simple GUI tool to create and edit desktop files, designed for Deepin.
 
 ## Dependencies
 
-qt5-default
+- qtbase5-dev
 
-qtcreator (Recommended)
+- qttools5-dev-tools
 
-libqt5xdg-dev
+- libdtkcore-dev (>= 5.0)
 
-libdtkcore-dev (>= 5.2.2.15-1)
+- libdtkgui-dev (>= 5.0)
 
-libdtkgui-dev (>= 5.2.2.18-1)
+- libdtkwidget-dev (>= 5.0)
 
-libdtkwidget-dev (>= 5.2.2.16-1)
+- libqt5xdg-dev
 
-dde-file-manager
-
-fakeroot
+- fakeroot
 
 ## Build
 
-Run build.sh to automatically build project and get deb in current dir.
+```bash
+mkdir -p build
+qmake desktop-entry-editor.pro -spec linux-g++ CONFIG+=qtquickcompiler -o build
+make -C build -j$(nproc)
+```
+
+or
+
+```bash
+dpkg-buildpackage -Zxz -rfakeroot -b -uc -us -j$(nproc)
+```
 
 ## Credit
 

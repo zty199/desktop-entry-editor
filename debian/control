@@ -1,0 +1,21 @@
+Source: desktop-entry-editor
+Maintainer: zty199 <zty2864@gmail.com>
+Section: utils
+Priority: optional
+Build-Depends:
+ debhelper (>= 9),
+ pkg-config,
+ qtchooser (>= 55-gc9562a1-1~),
+ qtbase5-dev,
+ qttools5-dev-tools,
+ libdtkcore-dev (>= 5.0),
+ libdtkwidget-dev (>= 5.0),
+ libqt5xdg-dev
+Standards-Version: 1.0
+Homepage: https://github.com/zty199/desktop-entry-editor
+
+Package: desktop-entry-editor
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Description: Desktop Entry Editor
+ A simple GUI tool to create and edit desktop files, desinged for Deepin.
