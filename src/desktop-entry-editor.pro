@@ -58,9 +58,25 @@ CONFIG(release, debug | release) {
 
 # Rules for deployment
 linux {
-isEmpty(PREFIX) {
-    PREFIX = /usr
-}
+isEmpty(PREFIX): PREFIX = /usr
+
+credits.files += $${PWD}/../pkg/entries/deepin/credits/$${TARGET}.json
+credits.path = $${PREFIX}/share/deepin/credits
+
+desktop.files += $${PWD}/../pkg/entries/applications/$${TARGET}.desktop
+desktop.path = $${PREFIX}/share/applications
+
+icon.files += $${PWD}/../pkg/entries/icons/hicolor/scalable/apps/$${TARGET}.svg
+icon.path = $${PREFIX}/share/icons/hicolor/scalable/apps
+
+qm.files += $${PWD}/../translations/*.qm
+qm.path = $${PREFIX}/share/$${TARGET}/translations
+
+INSTALLS += \
+    credits \
+    desktop \
+    icon \
+    qm
 
 target.path = $${PREFIX}/bin
 !isEmpty(target.path): INSTALLS += target

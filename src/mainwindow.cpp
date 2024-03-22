@@ -51,7 +51,7 @@ MainWindow::~MainWindow()
 bool MainWindow::eventFilter(QObject *watched, QEvent *event)
 {
     if ((qobject_cast<QLabel *>(watched) == m_icon || qobject_cast<QLabel *>(watched) == m_iconTip)
-        && (event->type() == QEvent::MouseButtonRelease /*&& dynamic_cast<QMouseEvent *>(event)->button() == Qt::LeftButton*/)) {
+        && (event->type() == QEvent::MouseButtonRelease && dynamic_cast<QMouseEvent *>(event)->button() == Qt::LeftButton)) {
         chooseIcon();
         return true;
     }
@@ -224,6 +224,7 @@ void MainWindow::initTitlebar()
     menu->addAction(openAction);
     menu->addAction(saveAction);
     menu->addAction(saveAsAction);
+    menu->addSeparator();
 
     new QShortcut(QKeySequence::New, this, SLOT(newDesktopFile()), nullptr, Qt::ApplicationShortcut);
     new QShortcut(QKeySequence::Open, this, SLOT(openDesktopFile()), nullptr, Qt::ApplicationShortcut);

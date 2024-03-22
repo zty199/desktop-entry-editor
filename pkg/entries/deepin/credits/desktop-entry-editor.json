@@ -1,0 +1,32 @@
+[
+    {
+        "name": "pkg-config",
+        "version": "",
+        "copyright": "",
+        "license": "MIT"
+    },
+    {
+        "name": "qt5-qmake",
+        "version": "",
+        "copyright": "",
+        "license": "LGPL-3.0-only"
+    },
+    {
+        "name": "qt5-qmake",
+        "version": "",
+        "copyright": "",
+        "license": "GPL-2.0-only"
+    },
+    {
+        "name": "qtbase5-dev",
+        "version": "",
+        "copyright": "",
+        "license": "LGPL-2.0-only"
+    },
+    {
+        "name": "qtbase5-dev",
+        "version": "",
+        "copyright": "",
+        "license": "GPL-3.0-only"
+    }
+]
