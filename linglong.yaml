@@ -1,43 +1,33 @@
-# SPDX-FileCopyrightText: 2023 UnionTech Software Technology Co., Ltd.
-#
-# SPDX-License-Identifier: LGPL-3.0-or-later
+version: "1"
 
 package:
   id: com.github.desktop-entry-editor
   name: desktop-entry-editor
-  version: 1.4.6
+  version: 1.4.6.1
   kind: app
   description: |
     desktop entry editor for deepin os.
 
-runtime:
-  id: org.deepin.Runtime
-  version: 23.0.0
+command:
+  - /opt/apps/com.github.desktop-entry-editor/files/bin/desktop-entey-editor
+
+base: org.deepin.foundation/23.0.0
+runtime: org.deepin.Runtime/23.0.1
 
 source:
   kind: local
-#  url: "https://github.com/zty199/desktop-entry-editor.git"
-#  version: 1.4.6
-#  commit: 81757e93af4d88984586d1899853d4ed4b7733bc
 
-variables:
-  build_dir: build-linglong
-  conf_args: |
-    BUILD_VERSION=${VERSION} \
-    PREFIX=${PREFIX} \
-    LIB_INSTALL_DIR=${PREFIX}/lib/${TRIPLET}
-  extra_args: |
-    -spec linux-g++ CONFIG+=qtquickcompiler \
-    -o ${build_dir}
+build: |
+  rm -rf build-linglong
+  mkdir -p build-linglong
 
-build:
-  kind: qmake
-  manual:
-    configure: |
-      rm -rf ${build_dir}
-      mkdir -p ${build_dir}
-      qmake ${conf_args} ${extra_args}
-    build: |
-      make -C ${build_dir} ${jobs}
-    install: |
-      make -C ${build_dir} ${jobs} INSTALL_ROOT=${dest_dir} install
+  qmake BUILD_VERSION=1.4.6 \
+        PREFIX=${PREFIX} \
+        LIB_INSTALL_DIR=${PREFIX}/lib/${TRIPLET} \
+        INSTALL_ROOT=${PREFIX} \
+        -spec linux-g++ CONFIG+=qtquickcompiler \
+        -o build-linglong \
+        desktop-entry-editor.pro
+
+  make -C build-linglong -j$(nproc)
+  make -C build-linglong -j$(nproc) install

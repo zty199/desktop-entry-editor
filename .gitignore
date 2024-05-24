@@ -51,3 +51,7 @@ debian/*.debhelper*
 debian/files
 debian/*.substvars
 debian/*desktop-entry-editor
+
+# Linglong ll-builder
+linglong
+*.layer

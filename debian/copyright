@@ -1,9 +1,9 @@
 Format: https://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
-Upstream-Name: gitlab-commit-statistics-tool
-Source: https://gitlabnj.uniontech.com/ut003880/gitlab-commit-statistic-tool
+Upstream-Name: desktop-entry-editor
+Source: https://github.com/zty199/desktop-entry-editor
 
 Files: *
-Copyright: ut003880 <zhangtianyi@uniontech.com>
+Copyright: zty199 <46324746+zty199@users.noreply.github.com>
  
 License: GPL-3+
  This package is free software; you can redistribute it and/or modify
