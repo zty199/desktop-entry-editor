@@ -24,7 +24,6 @@ build: |
   qmake BUILD_VERSION=1.4.6 \
         PREFIX=${PREFIX} \
         LIB_INSTALL_DIR=${PREFIX}/lib/${TRIPLET} \
-        INSTALL_ROOT=${PREFIX} \
         -spec linux-g++ CONFIG+=qtquickcompiler \
         -o build-linglong \
         desktop-entry-editor.pro
